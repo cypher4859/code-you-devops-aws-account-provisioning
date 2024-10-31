@@ -1,0 +1,38 @@
+variable "management_aws_account_id" {
+  type = string
+  description = "Account ID for the management account"
+}
+
+# variable "management_admin_role_arn" {
+#     type = string
+#     description = "The role in the Management account that will assume the child account admin role"
+# }
+
+# variable "management_billing_role_arn" {
+#     type = string
+#     description = "The role in the Management account that will assume the child account billing role"
+# }
+
+variable "staff_billing_role_name" {
+    default = "CodeYou_Staff_Billing_Role"
+    type = string
+    description = "The name of the child account billing role"
+}
+
+variable "staff_administrators_role_name" {
+    default = "CodeYou_Staff_Administrators_Role"
+    type = string
+    description = "The name of the child account administrators role"
+}
+
+variable "mentor_role_name" {
+    default = "CodeYou_Mentor_Role"
+    type = string
+    description = "The name of the child account mentor role role"
+}
+
+variable "student_role_name" {
+    default = "CodeYou_Student_Role"
+    type = string
+    description = "The name of the child account student role"
+}

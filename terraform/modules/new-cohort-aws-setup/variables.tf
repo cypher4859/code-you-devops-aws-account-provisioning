@@ -7,3 +7,8 @@ variable "account_owner_email" {
   type = string
   description = "Email address representing the owner of the new organization account"
 }
+
+variable "students_json" {
+  type = string
+  description = "JSON data for students"
+}

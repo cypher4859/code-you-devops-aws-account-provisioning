@@ -3,7 +3,10 @@ variable "students_json" {
   description = "JSON data for students"
 }
 
-variable "management_account_id" {
+variable "new_account_name" {
   type = string
-  description = "Account ID for the Management account"
+}
+
+variable "new_account_owner_email" {
+  type = string
 }

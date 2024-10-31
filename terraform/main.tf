@@ -15,8 +15,9 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-    alias  = "management_account"
+    # alias  = "management_account"
     region = "us-east-2"
+    profile = "blackhat-user"
 }
 
 provider "aws" {
@@ -26,6 +27,8 @@ provider "aws" {
     assume_role {
       role_arn = module.new_cohort_aws_setup.new_account_ops_role_arn
     }
+
+    profile = "blackhat-user"
 }
 
 module "root_organization_setup" {
@@ -35,13 +38,11 @@ module "root_organization_setup" {
 # TODO: Would be prudent to add some logic so we can build out multiple cohort accounts if
 module "new_cohort_aws_setup" {
     source = "./modules/new-cohort-aws-setup"
-    account_name = ""
-    account_owner_email = ""
+    account_name = var.new_account_name
+    account_owner_email = var.new_account_owner_email
+    students_json = var.students_json
+    providers = {
+      aws = aws.student_account
+      aws.management_account = aws
+    }
 }
-
-# Create network infrastructure
-# module "_network_infra" {
-#     source = "./modules/network-infra"
-#     vpc_id = "vpc-3771c65c" # Grabbed from the console
-#     public_subnet_id = "subnet-03595f11b44edacc8"
-# }

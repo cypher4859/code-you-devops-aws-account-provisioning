@@ -5,8 +5,8 @@ data "aws_iam_policy_document" "staff_billing_policy" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
-      identifiers = ["billing.amazonaws.com"] # Update as appropriate
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.management_aws_account_id}:role/ManagementBillingRole"]
     }
   }
 }
@@ -194,3 +194,20 @@ data "aws_iam_policy_document" "student_policy_document" {
     }
   }
 }
+
+# data "aws_iam_policy_document" "staff_administrators_policy" {
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "sts:AssumeRole"
+#     ]
+#     resources = [
+#       "arn:aws:iam::${var.management_aws_account_id}:role/${var.staff_administrators_role_name}"
+#     ]
+#     condition {
+#       test     = "StringEquals"
+#       variable = "aws:PrincipalOrgID"
+#       values   = ["<ORGANIZATION_ID>"]
+#     }
+#   }
+# }

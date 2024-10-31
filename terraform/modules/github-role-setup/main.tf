@@ -1,5 +1,13 @@
 // Create the OIDC audience
 // Create the deploy role that github will use
+
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
 locals {
     github_actions_role_name       = "CodeYou_GithubActions_Role"
 }

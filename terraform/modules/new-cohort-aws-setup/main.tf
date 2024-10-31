@@ -1,6 +1,20 @@
+terraform {
+    required_providers {
+        aws = {
+            source  = "hashicorp/aws"
+            version = "~> 5.0"
+            configuration_aliases = [aws.management_account]
+        }
+    }
+}
+
+data "aws_caller_identity" "current" {
+  provider = aws.management_account
+}
 
 locals {
   org_account_ops_role_name = "OrganizationAccountAccessRole"
+  management_account_id = data.aws_caller_identity.current.account_id
 }
 # Grab file of students from S3
 
@@ -10,32 +24,27 @@ module "new_aws_account" {
   new_account_name = var.account_name
   new_account_email_address = var.account_owner_email
   new_account_org_role_name = local.org_account_ops_role_name
+  providers = {
+    aws = aws.management_account
+  }
 }
+
 
 module "iam-entities" {
   source = "./iam-entities"
-  new_account_id = module.new_aws_account.new_account_id
-  providers = {
-    aws = aws.student_account
-  }
+  students_json = var.students_json
+  management_account_id = local.management_account_id
+  depends_on = [ module.new_aws_account ]
 }
 
-module "github-role-authentication" {
-  source = "../github-role-setup"
-  new_account_id = module.new_aws_account.new_account_id
-  providers = {
-    aws = aws.student_account
-  }
+module "student-network-infrastructure" {
+  source = "./student-network-infra"
+  students = module.iam-entities.students
+  depends_on = [ module.iam-entities ]
 }
 
-# TODO: Every student should get their own subnet with at least 2 availability zones
-module "network-infrastructure" {
-  source = "."
-}
-
-# Ensure it's related to the Organization
-
-# Create the SCPs for the new account
-
-
-# Create the IAM role for the Github pipeline
+# module "github-role-authentication" {
+#   source = "../github-role-setup"
+#   new_account_id = module.new_aws_account.new_account_id
+#   depends_on = [ module.new_aws_account, module.iam-entities ]
+# }

@@ -47,15 +47,21 @@ resource "aws_iam_user" "student_user" {
     }
 }
 
+resource "aws_iam_user_login_profile" "student_user_login" {
+  for_each = local.students
+  user                      = aws_iam_user.student_user[each.key].name  # Reference to the IAM user you've created
+  password_reset_required   = true       # Optionally force the user to reset the password on first login
+  password_length           = 16
+#   pgp_key                   = "keybase:username"         # PGP key to secure the password output (optional)
+}
+
 
 resource "aws_iam_user_group_membership" "student_user_membership" {
     for_each = local.students
     user = aws_iam_user.student_user[each.key].name
     groups = [
         aws_iam_group.student_group.name
-    ]
-
-    
+    ]    
 }
 
 # resource "aws_iam_user" "mentor_user" {

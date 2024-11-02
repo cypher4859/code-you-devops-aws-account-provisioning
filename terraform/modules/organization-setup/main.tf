@@ -15,6 +15,8 @@ terraform {
 data "aws_organizations_organization" "root_org" {}
 
 # TODO: Need to fill out the SCP
+# - Enforce tagging of `Owner`
+#
 resource "aws_organizations_policy" "root_scp" {
   name        = "DenyCertainServices"
   description = "Deny access to certain services for member accounts"

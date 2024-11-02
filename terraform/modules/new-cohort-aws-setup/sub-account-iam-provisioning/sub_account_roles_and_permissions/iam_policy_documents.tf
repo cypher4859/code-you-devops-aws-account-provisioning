@@ -1,17 +1,26 @@
 # TODO: Ensure that the roles from the management account can access the sub-accounts
 
-data "aws_iam_policy_document" "staff_billing_policy" {
+locals {
+  management_admin_role_arn = var.management_admin_role_arn
+  management_admin_group_arn = var.management_admin_group_arn
+  management_billing_role_arn = var.management_billing_role_arn
+}
+
+data "aws_iam_policy_document" "staff_billing_trust_policy" {
   statement {
     actions = ["sts:AssumeRole"]
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.management_aws_account_id}:role/ManagementBillingRole"]
+      identifiers = [
+        local.management_admin_role_arn,
+        local.management_billing_role_arn
+      ]
     }
   }
 }
 
-data "aws_iam_policy_document" "staff_billing_policy_document" {
+data "aws_iam_policy_document" "staff_billing_permissions_policy_document" {
   statement {
     actions = [
       "tag:GetResources",
@@ -59,7 +68,51 @@ data "aws_iam_policy_document" "staff_billing_policy_document" {
   }
 }
 
-data "aws_iam_policy_document" "mentor_policy" {
+data "aws_iam_policy_document" "staff_administrators_trust_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalTag/Group"
+      values   = [local.management_admin_group_arn]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "mentor_trust_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = [
+        local.management_admin_role_arn
+      ]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "mentor_permission_policy" {
+  statement {
+    sid    = "ECSPermissions"
+    effect = "Allow"
+    actions = [
+      "ecs:*"
+    ]
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "student_trust_policy" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -70,18 +123,7 @@ data "aws_iam_policy_document" "mentor_policy" {
   }
 }
 
-data "aws_iam_policy_document" "student_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"] # Update as appropriate
-    }
-  }
-}
-
-data "aws_iam_policy_document" "student_policy_document" {
+data "aws_iam_policy_document" "student_permission_policy" {
   statement {
     sid    = "ECSPermissions"
     effect = "Allow"
@@ -194,20 +236,3 @@ data "aws_iam_policy_document" "student_policy_document" {
     }
   }
 }
-
-# data "aws_iam_policy_document" "staff_administrators_policy" {
-#   statement {
-#     effect = "Allow"
-#     actions = [
-#       "sts:AssumeRole"
-#     ]
-#     resources = [
-#       "arn:aws:iam::${var.management_aws_account_id}:role/${var.staff_administrators_role_name}"
-#     ]
-#     condition {
-#       test     = "StringEquals"
-#       variable = "aws:PrincipalOrgID"
-#       values   = ["<ORGANIZATION_ID>"]
-#     }
-#   }
-# }

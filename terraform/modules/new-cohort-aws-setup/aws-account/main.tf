@@ -15,13 +15,20 @@ resource "aws_organizations_account" "new_account" {
 
 
   tags = {
+    Name          = var.new_account_name
     Environment = "Student Cohort"  # Example tag; you can modify or add more tags as needed
+    FreeTierEligible = "Yes"
+    AutoTerminate = "False"
+    Usage         = "Student"
+    CreationDate  = timestamp()
+    Project       = "DevOps With AWS" # TODO: This needs passed by variable
+    Creator       = "Terraform via Charles Kayser"
+    Owner         = var.new_account_email_address
   }
 
   # There is no AWS Organizations API for reading role_name
   lifecycle {
     ignore_changes = [role_name]
-
   }
 }
 

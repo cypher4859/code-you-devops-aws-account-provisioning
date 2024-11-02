@@ -1,13 +1,3 @@
-variable "account_name" {
-  type = string
-  description = "Human readable name to distinguish this account."
-}
-
-variable "account_owner_email" {
-  type = string
-  description = "Email address representing the owner of the new organization account"
-}
-
 variable "students_json" {
   type = string
   description = "JSON data for students"
@@ -28,6 +18,6 @@ variable "management_billing_role_arn" {
     description = "The role in the Management account that will assume the child account billing role"
 }
 
- variable "management_admin_group_arn" {
+variable "management_admin_group_arn" {
     type = string
- }
+}

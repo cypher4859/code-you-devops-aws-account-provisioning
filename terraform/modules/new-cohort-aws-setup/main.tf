@@ -3,18 +3,20 @@ terraform {
         aws = {
             source  = "hashicorp/aws"
             version = "~> 5.0"
-            configuration_aliases = [aws.management_account]
+            configuration_aliases = [aws.student_account, aws.management_account]
         }
     }
 }
 
-data "aws_caller_identity" "current" {
+data "aws_caller_identity" "management_current" {
   provider = aws.management_account
 }
 
+data "aws_caller_identity" "student_current" {}
+
 locals {
   org_account_ops_role_name = "OrganizationAccountAccessRole"
-  management_account_id = data.aws_caller_identity.current.account_id
+  management_account_id = data.aws_caller_identity.management_current.account_id
 }
 # Grab file of students from S3
 
@@ -31,10 +33,18 @@ module "new_aws_account" {
 
 
 module "iam-entities" {
-  source = "./iam-entities"
+  source = "./sub-account-iam-provisioning"
   students_json = var.students_json
-  management_account_id = local.management_account_id
+  management_admin_role_arn = var.management_admin_role_arn
+  management_billing_role_arn = var.management_billing_role_arn
+  management_org_id = var.management_org_id
+  management_admin_group_arn = var.management_admin_group_arn
   depends_on = [ module.new_aws_account ]
+  providers = {
+    aws = aws.student_account
+    aws.management_account = aws.management_account
+    aws.student_account = aws.student_account
+  }
 }
 
 module "student-network-infrastructure" {

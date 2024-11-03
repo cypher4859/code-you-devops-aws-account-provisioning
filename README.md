@@ -1,34 +1,14 @@
-# Code:You DevOps Provision User Accounts
+# Manually Provisioning Steps
 
-NOTES:
-- Need to have the csv file, by default there are no column names, manually added this in
-- 
+## First Time Setup
+1. Have a fresh AWS account
+2. Have a login to it
+3. Create an S3 bucket for it
+4. Create a pgp key
+5. Upload the pgp key to the S3 bucket
+6. `terraform apply -target="module.first-time-setup" -var="github_repo=user/repo" -var="github_token=<token>" -var="<bucket-name>" -var="target_workflow=whatever"
 
-TODOs:
-- [] Make the Administrator + Billing roles in management and student accounts
-- [] Flesh out the SCPs
-- [] Diagram this sucker
-- [] Refactor to handle the .json workflow in tfvars instead of parsing the csv.
-    - Basically we need an automated way to turn the csv into json and load that into tfvars
-- [] Consider workflows for:
-    - Need to add a student after initial provisioning
-    - Need to add a mentor after initial provisioning
-    - Need to remove a student (or mentor) after initial provisioning
-    - Need to monitor and alarm on any/all security keys in the account and restrict creation
-    -
-- [] This stuff vvv   
-
-```
-├─ main.tf  
-│  ├─ line 10: FIXME : This needs turned back on for a fresh account  
-│  └─ line 17: TODO : Need to fill out the SCP  
-└─ iam_policy_documents.tf  
-    └─ line 1: TODO : Ensure that the roles from the management account can access the sub-accounts  
-```
-
-EXPECTED WORKFLOW:
-1. Get the roster of students
-2. Make sure the columns are (name, email, class) along with the header
-3. Paste in the csv file content as a github secret in the repository
-4. Run the Github Actions workflow called Provision New Students
-5. viola
+## Subsequent provisioning steps
+1. Download the student roster
+2. *Add column headers to the roster for (name, email, class)
+4. Upload `students.json` to S3 bucket

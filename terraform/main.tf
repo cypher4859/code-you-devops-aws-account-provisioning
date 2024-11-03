@@ -31,6 +31,14 @@ provider "aws" {
     profile = "blackhat-user"
 }
 
+module "first-time-setup" {
+    source = "./modules/first-time-setup"
+    bucket_id = var.bucket_id
+    github_repo = var.github_repo
+    github_token = var.github_token
+    target_workflow = var.target_workflow
+}
+
 module "root_organization_setup" {
     source = "./modules/organization-setup"
     admins_json = var.admins_json

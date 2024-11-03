@@ -20,3 +20,24 @@ variable "admins_json" {
 #   type = string
 #   description = "JSON data for Billing staff in the Billing Account"
 # }
+
+variable "bucket_id" {
+  type = string
+  description = "value"
+}
+
+variable "github_repo" {
+  type = string
+  description = "Repo where the Workflows exist for adding new users" #"yourusername/yourrepository"
+}
+
+variable "github_token" {
+  type = string
+  description = "value"
+  sensitive = true
+}
+
+variable "target_workflow" {
+  type = string
+  description = "value"
+}

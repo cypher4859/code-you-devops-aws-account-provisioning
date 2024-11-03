@@ -2,16 +2,15 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-    #   configuration_aliases = [ aws.student_account ]
     }
   }
 }
 
 locals {
-    staff_administrators_group_name = "CodeYou_Staff_Administrators_Group"
-    staff_billing_group_name        = "CodeYou_Staff_Billing_Group"
-    mentor_group_name               = "CodeYou_Mentor_Group"
-    student_group_name              = "CodeYou_Student_Group"
+    staff_administrators_group_name = "CodeYouStaffAdministratorsGroup"
+    staff_billing_group_name        = "CodeYouStaffBillingGroup"
+    mentor_group_name               = "CodeYouMentorGroup"
+    student_group_name              = "CodeYouStudentGroup"
     # Reconstructing the student map from flattened data
     students = {
         for student in jsondecode(var.students_json) : student.name => student
@@ -26,20 +25,15 @@ locals {
 
 resource "aws_iam_group" "student_group" {
     name = local.student_group_name
-
-    
 }
 
 resource "aws_iam_group" "mentor_group" {
     name = local.mentor_group_name
-
-    
 }
 
 resource "aws_iam_user" "student_user" {
     for_each = local.students
     name  = each.value.name
-
     tags = {
         Email       = each.value.email
         Environment = "Student Cohort"

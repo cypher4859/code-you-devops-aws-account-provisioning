@@ -9,7 +9,7 @@ terraform {
   }
 }
 locals {
-    github_actions_role_name       = "CodeYou_GithubActions_Role"
+    github_actions_role_name       = "CodeYouGithubActionsRole"
 }
 
 data "aws_iam_policy_document" "github_actions_assume_role_policy" {

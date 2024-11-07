@@ -41,3 +41,5 @@ terraform/modules/new-cohort-aws-setup/sub-account-iam-provisioning/sub_account_
 terraform/modules/new-cohort-aws-setup/sub-account-iam-provisioning/sub_account_users_and_groups/assets/students.json
 terraform/modules/first-time-setup/lambda-parse-csv-to-json-and-notifications/lambda_function.zip
 terraform/modules/first-time-setup/setup-generic-bucket-notifications/lambda_function.zip
+**/.venv
+**/.venv/*

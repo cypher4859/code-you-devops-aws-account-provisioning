@@ -6,8 +6,12 @@ data "aws_s3_bucket" "primary_bucket" {
 
 locals {
     account_id = data.aws_caller_identity.current.account_id
-    student_new_users_path = "pipeline_data/provision/new_account/new_users/students/"
-    mentor_new_users_path = "pipeline_data/provision/new_account/new_users/mentors/"
+    student_new_users_output_json_file_name = "students.json"
+    student_new_users_path = "environment/aws/management/data-uploads/roster/json/students/"
+    student_bucket_path_to_csv_file = "${local.student_new_users_path}students.csv"
+    mentor_new_users_path = "environment/aws/management/data-uploads/roster/csv/mentors/"
+    mentor_bucket_path_to_csv_file = "${local.mentor_new_users_path}mentors.csv"
+
     bucket = data.aws_s3_bucket.primary_bucket
 }
 
@@ -55,8 +59,13 @@ module "setup-mentor-bucket-notifications" {
     purpose = "NotifyOnMentorUpload"
 }
 
+# FIXME: Needs refactored to allow for handling both students and mentors
+# which probably includes pulling the path from the bucket notification
 module "setup-lambda-csv-to-json" {
     source = "./lambda-parse-csv-to-json-and-notifications"
     bucket = local.bucket
     lambda_execution_role = aws_iam_role.lambda_role
+    bucket_path_to_csv_file = local.student_bucket_path_to_csv_file
+    destination_prefix_for_new_json_file = local.student_new_users_path
+    output_json_file_name = local.student_new_users_output_json_file_name
 }

@@ -2,6 +2,8 @@ locals {
   bucket = var.bucket
   lambda_execution_role = var.lambda_execution_role
   destination_prefix_for_new_json_file = var.destination_prefix_for_new_json_file
+  bucket_path_to_csv_file = var.bucket_path_to_csv_file
+  output_json_file_name = var.output_json_file_name
 }
 
 # Attach a policy to allow the Lambda function to write logs to CloudWatch
@@ -18,7 +20,7 @@ data "archive_file" "lambda_zip" {
 
 # TODO: Need to fill this out
 # Create the Lambda function
-resource "aws_lambda_function" "s3_trigger_function" {
+resource "aws_lambda_function" "s3_trigger_convert_csv_to_json" {
   function_name = "ConvertCSVToJsonOnS3Upload"
   role          = local.lambda_execution_role.arn
   handler       = "main.lambda_handler"
@@ -29,7 +31,10 @@ resource "aws_lambda_function" "s3_trigger_function" {
   # Environment variables (optional)
   environment {
     variables = {
-      EXAMPLE_VAR = "example_value"
+      TARGET_BUCKET = local.bucket.id
+      CSV_ROSTER_FILE_BUCKET_KEY = local.bucket_path_to_csv_file # Points directly at file
+      JSON_ROSTER_FILE_PREFIX = local.destination_prefix_for_new_json_file # points at the prefix, should end in `/`
+      OUTPUT_JSON_FILE_NAME = local.output_json_file_name # Simply the name of the file
     }
   }
 
@@ -41,7 +46,7 @@ resource "aws_lambda_function" "s3_trigger_function" {
 resource "aws_lambda_permission" "allow_s3_bucket" {
   statement_id  = "AllowS3InvokeLambda"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.s3_trigger_function.function_name
+  function_name = aws_lambda_function.s3_trigger_convert_csv_to_json.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = local.bucket.arn
 }
@@ -51,11 +56,11 @@ resource "aws_s3_bucket_notification" "example_bucket_notification" {
   bucket = local.bucket.id
 
   lambda_function {
-    lambda_function_arn = aws_lambda_function.s3_trigger_function.arn
+    lambda_function_arn = aws_lambda_function.s3_trigger_convert_csv_to_json.arn
     events              = ["s3:ObjectCreated:*"]
 
     # Optional - filter the objects that will trigger the Lambda
-    filter_prefix = "uploads/"
+    filter_prefix = local.destination_prefix_for_new_json_file
     filter_suffix = ".txt"
   }
 

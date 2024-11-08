@@ -6,16 +6,15 @@ import os
 import json
 from main import main  # Assuming your main function is in a file named "main.py"
 
+@mock_aws
 class TestCSVToJsonConversion(unittest.TestCase):
-    @mock_aws
     def test_main_function(self):
         test_cases = [
             {
                 "bucket_key": "environment/aws/management/data-uploads/roster/csv/students/students.csv",
                 "json_prefix": "environment/aws/management/data-uploads/roster/json/students/",
                 "output_file": "students.json",
-                "csv_data": """name,email,class
-Aaron Miller,aaronwmiller86@gmail.com,Introduction to AWS
+                "csv_data": """Aaron Miller,aaronwmiller86@gmail.com,Introduction to AWS
 Amanda Gearhart,argrt00@gmail.com,Introduction to AWS""",
                 "expected_data": [
                     {
@@ -34,8 +33,7 @@ Amanda Gearhart,argrt00@gmail.com,Introduction to AWS""",
                 "bucket_key": "environment/aws/management/data-uploads/roster/csv/mentors/mentors.csv",
                 "json_prefix": "environment/aws/management/data-uploads/roster/json/mentors/",
                 "output_file": "mentors.json",
-                "csv_data": """name,email,class
-John Doe,johndoe@gmail.com,Introduction to AWS
+                "csv_data": """John Doe,johndoe@gmail.com,Introduction to AWS
 Jane Smith,janesmith@gmail.com,Introduction to AWS""",
                 "expected_data": [
                     {

@@ -31,3 +31,8 @@ variable "purpose" {
   type = string
   description = "value"
 }
+
+variable "new_users_json_path" {
+  type = string
+  description = "value"
+}

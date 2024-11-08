@@ -15,6 +15,11 @@ variable "bucket_path_to_csv_file" {
   description = "Path in the bucket to the CSV file"
 }
 
+variable "bucket_path_to_csv_directory" {
+  type = string
+  description = "The path in to bucket to the folder/directory containing all the CSV files"
+}
+
 variable "output_json_file_name" {
   type = string
   description = "Location in the bucket that we're going to put the JSON file. This also triggers bucket notifications on upload."

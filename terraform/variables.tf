@@ -16,11 +16,6 @@ variable "admins_json" {
   description = "JSON data for Administrators in the Management Account"
 }
 
-# variable "billing_json" {
-#   type = string
-#   description = "JSON data for Billing staff in the Billing Account"
-# }
-
 variable "bucket_id" {
   type = string
   description = "value"
@@ -39,5 +34,5 @@ variable "github_token" {
 
 variable "target_workflow" {
   type = string
-  description = "value"
+  description = "The repository_dispatch in the github workflows to trigger"
 }

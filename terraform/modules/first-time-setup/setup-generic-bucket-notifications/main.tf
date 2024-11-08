@@ -1,6 +1,7 @@
 locals {
   bucket_id = var.bucket_id
   s3_bucket_prefix = var.s3_bucket_notification_target_prefix
+  destination_prefix = var.new_users_json_path
   github_repo = var.github_repo
   github_token = var.github_token
   target_workflow = var.target_workflow
@@ -13,7 +14,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 }
 
 resource "aws_cloudwatch_event_rule" "s3_upload_event_rule" {
-  name        = "S3FileUploadToGitHubTrigger${local.target_workflow}${var.purpose}"
+  name        = "S3FileUploadTrigger${local.target_workflow}${var.purpose}"
   description = "Trigger GitHub workflow upon S3 file upload."
   event_pattern = jsonencode({
     "source": ["aws.s3"],
@@ -35,6 +36,15 @@ data "archive_file" "lambda_zip" {
   output_path = "${path.module}/lambda_function.zip"
 }
 
+resource "aws_s3_object" "target_prefix" {
+  bucket = local.bucket_id
+  key    = local.s3_bucket_prefix  # The trailing '/' represents a folder
+}
+
+resource "aws_s3_object" "destination_prefix" {
+  bucket = local.bucket_id
+  key    = local.destination_prefix  # The trailing '/' represents a folder
+}
 
 
 resource "aws_lambda_function" "lambda_trigger_github_workflow" {

@@ -3,6 +3,7 @@ locals {
   lambda_execution_role = var.lambda_execution_role
   destination_prefix_for_new_json_file = var.destination_prefix_for_new_json_file
   bucket_path_to_csv_file = var.bucket_path_to_csv_file
+  bucket_path_to_csv_directory = var.bucket_path_to_csv_directory
   output_json_file_name = var.output_json_file_name
 }
 
@@ -57,11 +58,11 @@ resource "aws_s3_bucket_notification" "example_bucket_notification" {
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.s3_trigger_convert_csv_to_json.arn
-    events              = ["s3:ObjectCreated:*"]
+    events              = ["s3:ObjectCreated:*", "s3:ObjectRestore:Post"]
 
     # Optional - filter the objects that will trigger the Lambda
-    filter_prefix = local.destination_prefix_for_new_json_file
-    filter_suffix = ".txt"
+    filter_prefix = local.bucket_path_to_csv_directory
+    filter_suffix = ".csv"
   }
 
   depends_on = [aws_lambda_permission.allow_s3_bucket]

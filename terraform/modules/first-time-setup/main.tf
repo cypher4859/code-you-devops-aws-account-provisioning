@@ -7,10 +7,14 @@ data "aws_s3_bucket" "primary_bucket" {
 locals {
     account_id = data.aws_caller_identity.current.account_id
     student_new_users_output_json_file_name = "students.json"
-    student_new_users_path = "environment/aws/management/data-uploads/roster/json/students/"
-    student_bucket_path_to_csv_file = "${local.student_new_users_path}students.csv"
-    mentor_new_users_path = "environment/aws/management/data-uploads/roster/csv/mentors/"
-    mentor_bucket_path_to_csv_file = "${local.mentor_new_users_path}mentors.csv"
+    
+    student_new_users_csv_path = "environment/aws/management/data-uploads/roster/csv/students/"
+    student_new_users_json_path = "environment/aws/management/data-uploads/roster/json/students/"
+    student_bucket_path_to_csv_file = "${local.student_new_users_csv_path}students.csv"
+
+    mentor_new_users_csv_path = "environment/aws/management/data-uploads/roster/csv/mentors/"
+    mentor_new_users_json_path = "environment/aws/management/data-uploads/roster/json/mentors/"
+    mentor_bucket_path_to_csv_file = "${local.mentor_new_users_csv_path}mentors.csv"
 
     bucket = data.aws_s3_bucket.primary_bucket
 }
@@ -37,10 +41,38 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+resource "aws_iam_policy" "s3_read_policy" {
+  name = "lambda_s3_read_policy"
+
+  policy = jsonencode({
+    Version : "2012-10-17"
+    Statement : [
+      {
+        Effect : "Allow"
+        Action : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource : [
+          local.bucket.arn,
+          "${local.bucket.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_s3_read_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.s3_read_policy.arn
+}
+
 module "setup-student-bucket-notifications" {
     source = "./setup-generic-bucket-notifications"
     bucket_id = local.bucket.id
-    s3_bucket_notification_target_prefix = local.student_new_users_path
+    s3_bucket_notification_target_prefix = local.student_new_users_csv_path
+    new_users_json_path = local.student_new_users_json_path
     github_repo = var.github_repo
     github_token = var.github_token
     target_workflow = var.target_workflow
@@ -51,7 +83,8 @@ module "setup-student-bucket-notifications" {
 module "setup-mentor-bucket-notifications" {
     source = "./setup-generic-bucket-notifications"
     bucket_id = local.bucket.id
-    s3_bucket_notification_target_prefix = local.mentor_new_users_path
+    s3_bucket_notification_target_prefix = local.mentor_new_users_csv_path
+    new_users_json_path = local.mentor_new_users_json_path
     github_repo = var.github_repo
     github_token = var.github_token
     target_workflow = var.target_workflow
@@ -65,7 +98,8 @@ module "setup-lambda-csv-to-json" {
     source = "./lambda-parse-csv-to-json-and-notifications"
     bucket = local.bucket
     lambda_execution_role = aws_iam_role.lambda_role
+    destination_prefix_for_new_json_file = local.student_new_users_json_path
     bucket_path_to_csv_file = local.student_bucket_path_to_csv_file
-    destination_prefix_for_new_json_file = local.student_new_users_path
+    bucket_path_to_csv_directory = local.student_new_users_csv_path
     output_json_file_name = local.student_new_users_output_json_file_name
 }

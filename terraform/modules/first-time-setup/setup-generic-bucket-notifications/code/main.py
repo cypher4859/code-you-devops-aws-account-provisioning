@@ -5,7 +5,7 @@ import os
 def lambda_handler(event, context):
     main()
 
-def main():
+def main() -> dict:
     http = urllib3.PoolManager()
     github_token = os.getenv("GITHUB_TOKEN")
     repo_name = os.getenv("GITHUB_REPO_NAME")

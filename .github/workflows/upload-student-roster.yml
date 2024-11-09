@@ -24,8 +24,9 @@ jobs:
       - name: Process and Write Student Data into students.csv file
         run: |
           echo "${{ env.STUDENT_DATA }}" | \
-          sed 's/[\"\']//g' | \
+          sed "s/[\'\"]//g" | \
           awk -F, '{print $1 "," $2}' > students.csv
+      
       
         
       - name: Configure AWS credentials

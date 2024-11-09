@@ -17,11 +17,13 @@ locals {
     mentor_bucket_path_to_csv_file = "${local.mentor_new_users_csv_path}mentors.csv"
 
     bucket = data.aws_s3_bucket.primary_bucket
+    github_repo = var.github_repo
 }
 
 module "setup-pipeline-access" {
     source = "../github-role-setup"
     account_id = local.account_id
+    github_repo = local.github_repo
 }
 
 resource "aws_iam_role" "lambda_role" {

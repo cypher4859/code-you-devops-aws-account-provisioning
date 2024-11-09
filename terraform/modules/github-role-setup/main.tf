@@ -10,11 +10,12 @@ terraform {
 }
 locals {
     github_actions_role_name       = "CodeYouGithubActionsRole"
+    github_repo                    = var.github_repo
 }
 
 data "aws_iam_policy_document" "github_actions_assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
 
     principals {
@@ -26,6 +27,12 @@ data "aws_iam_policy_document" "github_actions_assume_role_policy" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:aud"
       values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = ["repo:${local.github_repo}:ref:refs/heads/develop"]
     }
   }
 }

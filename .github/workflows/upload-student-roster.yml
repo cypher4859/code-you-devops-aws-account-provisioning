@@ -37,3 +37,6 @@ jobs:
         run: aws s3 cp students.csv s3://${{ env.TF_VAR_bucket_id }}/${{ env.CSV_DESTINATION_PREFIX }}
         env:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Success Message
+        run: echo "Success! The successful upload should have triggered the full terraform apply workflow to deploy the environment"

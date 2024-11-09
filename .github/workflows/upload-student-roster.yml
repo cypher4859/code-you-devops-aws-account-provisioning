@@ -24,6 +24,15 @@ jobs:
       - name: Read Student Data into students.csv file
         run: echo ${{ env.STUDENT_DATA }} > students.csv
       
+      - name: Remove Last Column from CSV
+        run: awk -F, 'BEGIN {OFS=","} {NF--; print}' students.csv > students_cleaned.csv
+      
+      - name: Remove Quotes from CSV
+        run: sed -i 's/[\"\']//g' students_cleaned.csv
+      
+      - name: Rename Cleaned File
+        run: mv students_cleaned.csv students.csv
+      
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

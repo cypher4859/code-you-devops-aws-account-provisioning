@@ -8,15 +8,15 @@ on:
       ]
 
 env:
-  TF_VAR_bucket_id: ${{ vars.primary_bucket_id }}
-  TF_VAR_github_repo: ${{ vars.github_repo }}
-  TF_VAR_github_token: ${{ secrets.github_token }}
+  TF_VAR_bucket_id: ${{ vars.PRIMARY_BUCKET_ID }}
+  TF_VAR_github_repo: ${{ vars.THIS_REPO }}
+  TF_VAR_github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
   TF_VAR_target_workflow: "terraform-full-deploy"
   TF_VAR_new_account_name: "Student Account"
   TF_VAR_new_account_owner_email: ${{ vars.NEW_ACCOUNT_OWNER_EMAIL }}
   TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-  STUDENT_DATA: ${{ vars.STUDENT_DATA }}
+  JSON_DESTINATION_PREFIX: environment/aws/management/data-uploads/roster/json/students/
 
 
 jobs:
@@ -73,6 +73,17 @@ jobs:
           role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Install AWS CLI
+        run: sudo apt-get install -y awscli
+  
+      - name: Download the JSON student data from S3 Bucket
+        run: aws s3 cp s3://${{ env.TF_VAR_bucket_id }}/${{ env.JSON_DESTINATION_PREFIX }}/students.json students.json
+        env:
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Set TF_VAR_students_json
+        run: echo "TF_VAR_students_json=$(cat students.json)" >> $GITHUB_ENV
+
       # Step 2: Setup Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -116,16 +127,22 @@ jobs:
           role-to-assume: ${{ secrets.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      - name: Install AWS CLI
+        run: sudo apt-get install -y awscli
+  
+      - name: Download the JSON student data from S3 Bucket
+        run: aws s3 cp s3://${{ env.TF_VAR_bucket_id }}/${{ env.JSON_DESTINATION_PREFIX }}/students.json students.json
+        env:
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Set TF_VAR_students_json
+        run: echo "TF_VAR_students_json=$(cat students.json)" >> $GITHUB_ENV
+
       # Step 2: Setup Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.1 # Adjust this to your Terraform version
-
-      - name: Build TF Environment
-        working-directory: ./terraform
-        run: |
-          
 
       - name: Terraform Init
         working-directory: ./terraform

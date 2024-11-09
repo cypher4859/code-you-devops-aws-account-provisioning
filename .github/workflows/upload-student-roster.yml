@@ -5,7 +5,7 @@ on:
 
 env:
   TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
-  TF_VAR_bucket_id: ${{ vars.primary_bucket_id }}
+  TF_VAR_bucket_id: ${{ vars.PRIMARY_BUCKET_ID }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   STUDENT_DATA: ${{ vars.STUDENT_DATA }} # NOTE: You will need to paste the contents of the rost this variable in the UI
   CSV_DESTINATION_PREFIX: environment/aws/management/data-uploads/roster/csv/students/

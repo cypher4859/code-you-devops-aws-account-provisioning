@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Process and Write Student Data into students.csv file
         run: |
@@ -27,11 +33,6 @@ jobs:
           sed "s/[\'\"]//g" | \
           awk -F, '{print $1 "," $2}' > students.csv
         
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Install AWS CLI
         run: sudo apt-get install -y awscli

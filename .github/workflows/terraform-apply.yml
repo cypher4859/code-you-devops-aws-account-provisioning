@@ -14,6 +14,7 @@ env:
   TF_VAR_target_workflow: "terraform-full-deploy"
   TF_VAR_new_account_name: "Student Account"
   TF_VAR_new_account_owner_email: ${{ vars.NEW_ACCOUNT_OWNER_EMAIL }}
+  TF_VAR_admins_json: ${{ vars.ADMINS_JSON }}
   TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   JSON_DESTINATION_PREFIX: environment/aws/management/data-uploads/roster/json/students/

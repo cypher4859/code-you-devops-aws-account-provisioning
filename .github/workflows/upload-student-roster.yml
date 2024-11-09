@@ -1,0 +1,37 @@
+on:
+  workflow_dispatch:  # Enables manual trigger from the UI
+
+env:
+  TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
+  TF_VAR_bucket_id: ${{ vars.primary_bucket_id }}
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  STUDENT_DATA: ${{ vars.STUDENT_DATA }} # NOTE: You will need to paste the contents of the rost this variable in the UI
+  CSV_DESTINATION_PREFIX: environment/aws/management/data-uploads/roster/csv/students/
+
+jobs:
+  upload-student-roster:
+    name: Upload Student Roster
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Read Student Data into students.csv file
+        run: echo ${{ env.STUDENT_DATA }} > students.csv
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Install AWS CLI
+        run: sudo apt-get install -y awscli
+
+      - name: Upload to S3 Bucket
+        run: aws s3 cp students.csv s3://${{ env.TF_VAR_bucket_id }}/${{ env.CSV_DESTINATION_PREFIX }}
+        env:
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}

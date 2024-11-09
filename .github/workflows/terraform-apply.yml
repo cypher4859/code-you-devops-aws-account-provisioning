@@ -13,6 +13,18 @@ on:
         terraform-full-deploy
       ]
 
+env:
+  TF_VAR_bucket_id: ${{ vars.primary_bucket_id }}
+  TF_VAR_github_repo: ${{ vars.github_repo }}
+  TF_VAR_github_token: ${{ secrets.github_token }}
+  TF_VAR_target_workflow: "terraform-full-deploy"
+  TF_VAR_new_account_name: "Student Account"
+  TF_VAR_new_account_owner_email: ${{ vars.NEW_ACCOUNT_OWNER_EMAIL }}
+  TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  STUDENT_DATA: ${{ vars.STUDENT_DATA }}
+
+
 jobs:
   check-terraform-changes:
     name: Check for Terraform Changes
@@ -59,13 +71,13 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       # Step 2: Setup Terraform CLI
       - name: Setup Terraform
@@ -102,7 +114,7 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -115,6 +127,11 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.1 # Adjust this to your Terraform version
+
+      - name: Build TF Environment
+        working-directory: ./terraform
+        run: |
+          
 
       - name: Terraform Init
         working-directory: ./terraform

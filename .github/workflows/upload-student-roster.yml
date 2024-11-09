@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # Enables manual trigger from the UI
 
 env:
-  TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
+  TERRAFORM_AWS_ROLE_TO_ASSUME: ${{ secrets.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
   TF_VAR_bucket_id: ${{ vars.PRIMARY_BUCKET_ID }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   STUDENT_DATA: ${{ vars.STUDENT_DATA }} # NOTE: You will need to paste the contents of the rost this variable in the UI

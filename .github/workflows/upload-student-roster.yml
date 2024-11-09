@@ -26,13 +26,11 @@ jobs:
           echo "${{ env.STUDENT_DATA }}" | \
           sed "s/[\'\"]//g" | \
           awk -F, '{print $1 "," $2}' > students.csv
-      
-      
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ vars.TERRAFORM_DEVOPS_AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Install AWS CLI

@@ -1,3 +1,5 @@
+name: Upload Student Roster
+
 on:
   workflow_dispatch:  # Enables manual trigger from the UI
 

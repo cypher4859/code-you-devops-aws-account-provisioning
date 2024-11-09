@@ -45,7 +45,10 @@ resource "aws_iam_openid_connect_provider" "github_actions" {
     # This is the SHA-1 thumbprint of the certificate used by https://token.actions.githubusercontent.com, 
     # which GitHub uses to issue OIDC tokens.
     # If needed you can use the `openssl` CLI tool to check certificate chain of the OIDC endpoint
-    thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
+    thumbprint_list = [
+      "6938fd4d98bab03faadb97b34396831e3780aea1",
+      "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
+    ]
 }
 
 resource "aws_iam_role" "github_actions_role" {

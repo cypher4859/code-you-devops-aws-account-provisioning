@@ -1,12 +1,6 @@
 name: On Push, Build and Terraform Apply
 
 on:
-  push:
-    branches:
-      - develop  # Trigger this workflow on pushes to the main branch
-  pull_request:
-    branches:
-      - main  # Trigger on pull requests to main branch
   workflow_dispatch:  # Enables manual trigger from the UI
   repository_dispatch:
       types: [

@@ -72,7 +72,7 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_read_attachment" {
 
 module "setup-student-bucket-notifications" {
     source = "./setup-generic-bucket-notifications"
-    bucket_id = local.bucket.id
+    bucket = local.bucket
     s3_bucket_notification_target_prefix = local.student_new_users_csv_path
     new_users_json_path = local.student_new_users_json_path
     github_repo = var.github_repo
@@ -84,7 +84,7 @@ module "setup-student-bucket-notifications" {
 
 module "setup-mentor-bucket-notifications" {
     source = "./setup-generic-bucket-notifications"
-    bucket_id = local.bucket.id
+    bucket = local.bucket
     s3_bucket_notification_target_prefix = local.mentor_new_users_csv_path
     new_users_json_path = local.mentor_new_users_json_path
     github_repo = var.github_repo

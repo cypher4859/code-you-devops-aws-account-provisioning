@@ -1,4 +1,5 @@
 variable "bucket" {
+  description = "The bucket"
 }
 
 variable "lambda_execution_role" {

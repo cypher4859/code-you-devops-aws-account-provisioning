@@ -2,9 +2,8 @@ variable "s3_bucket_notification_target_prefix" {
   type = string
 }
 
-variable "bucket_id" {
-  type = string
-  description = "The name of the S3 bucket"
+variable "bucket" {
+  description = "The S3 bucket object"
 }
 
 variable "github_repo" {

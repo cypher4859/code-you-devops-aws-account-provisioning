@@ -6,20 +6,26 @@ variable "lambda_execution_role" {
   description = "value"
 }
 
-variable "destination_prefix_for_new_json_file" {
+variable "json_s3_bucket_prefix_file_name" {
   type = string
   description = "Path in the bucket to the new JSON file"
 }
 
-variable "bucket_path_to_csv_file" {
+variable "csv_s3_bucket_prefix_file_name" {
   type = string
   description = "Path in the bucket to the CSV file"
 }
 
-variable "bucket_path_to_csv_directory" {
+variable "csv_directory_s3_bucket_prefix" {
   type = string
   description = "The path in to bucket to the folder/directory containing all the CSV files"
 }
+
+variable "json_directory_s3_bucket_prefix" {
+  type = string
+  description = "The path in to bucket to the folder/directory containing all the JSON files"
+}
+
 
 variable "output_json_file_name" {
   type = string

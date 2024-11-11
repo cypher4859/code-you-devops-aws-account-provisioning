@@ -34,8 +34,6 @@ def main():
         for row in csv_reader:
             # Replace spaces in the 'name' value with underscores
             row['name'] = row['name'].replace(' ', '_')
-            # row['email'] = row['email'].replace('\'', '')
-            row['email'] = row['email'].replace('"', '')
             csv_data.append(row)
         
         print(f"Data processed successfully: {csv_data}")

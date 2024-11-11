@@ -95,29 +95,8 @@ module "setup-lambda-trigger-github-workflow" {
   github_token = local.github_token
   github_repo = local.github_repo
   target_workflow = local.target_workflow
-}
-
-module "setup-bucket-notifications" {
-  source = "./bucket-notification"
-  bucket = local.bucket
-  lambda_notifications = [
-    # Lambda setup for notify github on student json upload
-    {
-      lambda_function_arn = module.setup-lambda-csv-to-json.lambda_function_arn
-      filter_prefix       = local.student_new_users_csv_path
-      filter_suffix       = ".csv"
-    },
-    # Lambda setup for notify github on lambda-parse-csv-to-json upload
-    {
-      lambda_function_arn = module.setup-lambda-trigger-github-workflow.lambda_function_arn
-      filter_prefix       = local.student_new_users_json_path
-      filter_suffix       = ".json"
-    }
-    # Lambda setup for notify github on mentor json upload
-    # {
-    #   lambda_function_arn = module.setup
-    # }
-  ]
+  lambda_execution_role = aws_iam_role.lambda_role
+  bucket_arn = local.bucket.arn
 }
 
 resource "aws_s3_bucket_notification" "handle_bucket_notifications" {
@@ -137,10 +116,6 @@ resource "aws_s3_bucket_notification" "handle_bucket_notifications" {
         filter_prefix       = local.student_new_users_json_path
         filter_suffix       = ".json"
       }
-      # Lambda setup for notify github on mentor json upload
-      # {
-      #   lambda_function_arn = module.setup
-      # }
     ]
     content {
       lambda_function_arn = lambda_function.value.lambda_function_arn
@@ -151,5 +126,8 @@ resource "aws_s3_bucket_notification" "handle_bucket_notifications" {
     }
   }
 
-  depends_on = [aws_lambda_permission.allow_s3_bucket_trigger_generic]
+  depends_on = [
+    module.setup-lambda-trigger-github-workflow, 
+    module.setup-lambda-csv-to-json
+  ]
 }

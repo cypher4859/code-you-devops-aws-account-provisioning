@@ -2,6 +2,8 @@ locals {
   github_repo = var.github_repo
   github_token = var.github_token
   target_workflow = var.target_workflow
+  lambda_execution_role = var.lambda_execution_role
+  bucket_arn = var.bucket_arn
 }
 
 data "archive_file" "trigger_github_workflow_lambda_zip" {
@@ -27,3 +29,13 @@ resource "aws_lambda_function" "s3_trigger_github_workflow" {
     }
   }
 }
+
+
+resource "aws_lambda_permission" "allow_s3_bucket_trigger_github_workflow" {
+  statement_id  = "AllowS3InvokeLambdaTriggerGithubWorkflow"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.s3_trigger_github_workflow.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = local.bucket_arn
+}
+

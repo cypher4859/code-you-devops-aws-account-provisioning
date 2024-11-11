@@ -8,14 +8,15 @@ def lambda_handler(event, context):
 def main() -> dict:
     http = urllib3.PoolManager()
     github_token = os.getenv("GITHUB_TOKEN")
-    repo_name = os.getenv("GITHUB_REPO_NAME")
+    repo_name = os.getenv("GITHUB_REPO")
     target_workflow = os.getenv("GITHUB_WORKFLOW")
 
     url = f"https://api.github.com/repos/{repo_name}/dispatches"
 
     headers = {
         'Authorization': f'token {github_token}',
-        'Accept': 'application/vnd.github.v3+json'
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
     }
 
     payload = {

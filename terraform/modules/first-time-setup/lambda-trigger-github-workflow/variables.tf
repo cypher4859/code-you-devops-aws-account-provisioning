@@ -13,3 +13,10 @@ variable "target_workflow" {
   type = string
   description = "value"
 }
+
+variable "lambda_execution_role" {
+}
+
+variable "bucket_arn" {
+  
+}

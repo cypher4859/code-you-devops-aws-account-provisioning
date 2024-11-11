@@ -95,7 +95,7 @@ jobs:
       # Step 3: Initialize Terraform
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init
+        run: terraform init -reconfigure
 
       # Step 4: Run Terraform Plan
       - name: Terraform Plan
@@ -148,7 +148,7 @@ jobs:
 
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init
+        run: terraform init -reconfigure
 
       # Step 3: Download the plan artifact
       - name: Download Plan Artifact

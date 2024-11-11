@@ -17,7 +17,7 @@ terraform {
 provider "aws" {
     # alias  = "management_account"
     region = "us-east-2"
-    profile = "blackhat-user"
+    # profile = "blackhat-user"
 }
 
 provider "aws" {
@@ -28,7 +28,7 @@ provider "aws" {
       role_arn = module.new_cohort_aws_setup.new_account_ops_role_arn
     }
 
-    profile = "blackhat-user"
+    # profile = "blackhat-user"
 }
 
 module "first-time-setup" {

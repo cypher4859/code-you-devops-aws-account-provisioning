@@ -25,7 +25,7 @@ resource "aws_lambda_function" "s3_trigger_github_workflow" {
     variables = {
       GITHUB_TOKEN = local.github_token
       GITHUB_REPO = local.github_repo
-      TARGET_WORKFLOW = local.target_workflow
+      GITHUB_WORKFLOW = local.target_workflow
     }
   }
 }

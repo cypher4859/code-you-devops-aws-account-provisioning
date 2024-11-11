@@ -1,8 +1,8 @@
 import csv
 import json
 import os
-import re
 import boto3
+import re
 
 def lambda_handler(event, context):
     main()
@@ -32,17 +32,11 @@ def main():
         # Prepare list of dictionaries for JSON
         json_data = []
         for row in csv_reader:
-            # Validate email format
-            if not is_valid_email(row['email']):
-                print(f"Invalid email format found: {row['email']}")
-                continue  # Skip invalid email entries
-
-            # Replace spaces in the 'name' value with underscores
-            row['name'] = row['name'].replace(' ', '_')
+            # Sanitize the 'name' field for IAM username requirements
+            row['name'] = re.sub(r'[^a-zA-Z0-9+=,.@_-]', '', row['name'].replace(' ', '_'))
             
-            # Clean the name to be compatible with AWS IAM User name requirements
-            # Only allow alphanumeric characters and `+=,.@-`
-            row['name'] = re.sub(r'[^a-zA-Z0-9+=,.@-]', '', row['name'])
+            # Sanitize the 'email' field to remove unwanted characters
+            row['email'] = row['email'].replace('"', '').replace("'", '')
             
             json_data.append(row)
 
@@ -62,11 +56,6 @@ def main():
         # Clean up the temporary file if it exists
         if os.path.exists(local_json_file_path):
             os.remove(local_json_file_path)
-
-def is_valid_email(email):
-    # Simple regex for validating an email address
-    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    return re.match(email_regex, email) is not None
 
 if __name__ == "__main__":
     main()

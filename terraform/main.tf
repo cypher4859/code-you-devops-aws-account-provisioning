@@ -6,7 +6,7 @@ terraform {
         }
     }
     backend "s3" {
-        bucket = "blackcypher-ops-bucket"
+        bucket = "codeyou-ops-bucket"
         key    = "terraform/state/code-you/devops-with-aws/admin-provisioning/terraform.tfstate"
         region = "us-east-2"
         encrypt = true

@@ -32,6 +32,11 @@ def main():
         # Prepare list of dictionaries for JSON
         json_data = []
         for row in csv_reader:
+            # Validate email format
+            if not is_valid_email(row['email']):
+                print(f"Invalid email format found: {row['email']}")
+                continue  # Skip invalid email entries
+
             # Replace spaces in the 'name' value with underscores
             row['name'] = row['name'].replace(' ', '_')
             
@@ -57,6 +62,11 @@ def main():
         # Clean up the temporary file if it exists
         if os.path.exists(local_json_file_path):
             os.remove(local_json_file_path)
+
+def is_valid_email(email):
+    # Simple regex for validating an email address
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(email_regex, email) is not None
 
 if __name__ == "__main__":
     main()

@@ -82,8 +82,9 @@ jobs:
         env:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Set Path to JSON File
-        run: echo "TF_VAR_students_json_file=$(realpath students.json)" >> $GITHUB_ENV
+      - name: Set TF_VAR_students_json
+        run: echo "TF_VAR_students_json=$(jq -c . students.json)" >> $GITHUB_ENV
+        
 
       # Step 2: Setup Terraform CLI
       - name: Setup Terraform
@@ -99,7 +100,7 @@ jobs:
       # Step 4: Run Terraform Plan
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -var-file="${TF_VAR_students_json_file}" -out=tfplan
+        run: terraform plan -out=tfplan
 
       # Step 5: Upload the plan file as an artifact
       - name: Upload Plan File
@@ -159,4 +160,4 @@ jobs:
       # Step 4: Run Terraform Apply (auto-approved)
       - name: Terraform Apply
         working-directory: ./terraform
-        run: terraform apply -var-file="${TF_VAR_students_json_file}" -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan

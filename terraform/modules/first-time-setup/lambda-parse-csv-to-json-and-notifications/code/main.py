@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import re
 import boto3
 
 def lambda_handler(event, context):
@@ -29,16 +30,21 @@ def main():
         csv_reader = csv.DictReader(csv_data, fieldnames=fieldnames)
         
         # Prepare list of dictionaries for JSON
-        csv_data = []
+        json_data = []
         for row in csv_reader:
             # Replace spaces in the 'name' value with underscores
             row['name'] = row['name'].replace(' ', '_')
-            csv_data.append(row)
+            
+            # Clean the name to be compatible with AWS IAM User name requirements
+            # Only allow alphanumeric characters and `+=,.@-`
+            row['name'] = re.sub(r'[^a-zA-Z0-9+=,.@-]', '', row['name'])
+            
+            json_data.append(row)
 
         # Write JSON output
         json_final_bucket_destination = f"{json_bucket_path}{output_json_file_name}"
         with open(local_json_file_path, mode='w') as json_file:
-            json.dump(csv_data, json_file, indent=2)
+            json.dump(json_data, json_file, indent=2)
 
         s3_client.upload_file(local_json_file_path, bucket, f"{json_final_bucket_destination}")
 

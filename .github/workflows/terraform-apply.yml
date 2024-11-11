@@ -1,4 +1,4 @@
-name: On Push, Build and Terraform Apply
+name: On Roster Upload - Deploy Environment
 
 on:
   workflow_dispatch:  # Enables manual trigger from the UI

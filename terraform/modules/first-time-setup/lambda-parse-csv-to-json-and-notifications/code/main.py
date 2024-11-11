@@ -2,7 +2,6 @@ import csv
 import json
 import os
 import boto3
-import re
 
 def lambda_handler(event, context):
     main()
@@ -30,20 +29,18 @@ def main():
         csv_reader = csv.DictReader(csv_data, fieldnames=fieldnames)
         
         # Prepare list of dictionaries for JSON
-        json_data = []
+        csv_data = []
         for row in csv_reader:
-            # Sanitize the 'name' field for IAM username requirements
-            row['name'] = re.sub(r'[^a-zA-Z0-9+=,.@_-]', '', row['name'].replace(' ', '_'))
-            
-            # Sanitize the 'email' field to remove unwanted characters
-            row['email'] = row['email'].replace('"', '').replace("'", '')
-            
-            json_data.append(row)
+            # Replace spaces in the 'name' value with underscores
+            row['name'] = row['name'].replace(' ', '_')
+            row['email'] = row['email'].replace('\'', '')
+            row['email'] = row['email'].replace('"', '')
+            csv_data.append(row)
 
         # Write JSON output
         json_final_bucket_destination = f"{json_bucket_path}{output_json_file_name}"
         with open(local_json_file_path, mode='w') as json_file:
-            json.dump(json_data, json_file, indent=2)
+            json.dump(csv_data, json_file, indent=2)
 
         s3_client.upload_file(local_json_file_path, bucket, f"{json_final_bucket_destination}")
 

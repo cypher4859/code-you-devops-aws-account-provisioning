@@ -138,7 +138,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Set TF_VAR_students_json
-        run: echo "TF_VAR_students_json=$(cat students.json)" >> $GITHUB_ENV
+        run: echo "TF_VAR_students_json=$(jq -c . students.json)" >> $GITHUB_ENV
 
       # Step 2: Setup Terraform CLI
       - name: Setup Terraform

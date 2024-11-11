@@ -30,12 +30,15 @@ def main():
         
         # Prepare list of dictionaries for JSON
         csv_data = []
+        print("Processing data")
         for row in csv_reader:
             # Replace spaces in the 'name' value with underscores
             row['name'] = row['name'].replace(' ', '_')
-            row['email'] = row['email'].replace('\'', '')
+            # row['email'] = row['email'].replace('\'', '')
             row['email'] = row['email'].replace('"', '')
             csv_data.append(row)
+        
+        print(f"Data processed successfully: {csv_data}")
 
         # Write JSON output
         json_final_bucket_destination = f"{json_bucket_path}{output_json_file_name}"

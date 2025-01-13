@@ -21,9 +21,13 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
+
+      - name: Decode OIDC Token
+        run: |
+          echo "${{ secrets.GITHUB_ID_TOKEN }}" | base64 --decode | jq '.'
         
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ env.TERRAFORM_AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}

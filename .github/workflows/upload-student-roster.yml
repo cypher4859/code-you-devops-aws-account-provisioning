@@ -36,7 +36,7 @@ jobs:
         
 
       - name: Install AWS CLI
-        run: sudo apt install -y awscli
+        run: sudo apt update -y && sudo apt install -y awscli
 
       - name: Upload to S3 Bucket
         run: aws s3 cp students.csv s3://${{ env.TF_VAR_bucket_id }}/${{ env.CSV_DESTINATION_PREFIX }}

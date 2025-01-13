@@ -6,9 +6,9 @@ terraform {
         }
     }
     backend "s3" {
-        bucket = "codeyou-ops-bucket"
+        bucket  = var.bucket_id
         key    = "terraform/state/code-you/devops-with-aws/admin-provisioning/terraform.tfstate"
-        region = "us-east-2"
+        region = var.backend_bucket_region
         encrypt = true
     }
 }
@@ -36,7 +36,8 @@ module "first-time-setup" {
     bucket_id = var.bucket_id
     github_repo = var.github_repo
     github_token = var.github_token
-    target_workflow = var.target_workflow
+    environment = var.environment
+    target_workflow = ""
 }
 
 module "root_organization_setup" {

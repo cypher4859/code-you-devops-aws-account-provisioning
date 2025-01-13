@@ -1,0 +1,39 @@
+name: Test IAM User Permissions
+
+on:
+  workflow_dispatch:
+    inputs:
+      iam_user:
+        description: 'IAM User to Authenticate'
+        required: true
+        default: 'test-user'
+
+jobs:
+  test:
+    name: Run Tests as IAM User
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Retrieve IAM User Secrets
+      id: retrieve_secrets
+      run: |
+        echo "::add-mask::${{ secrets[inputs.iam_user + '_ACCESS_KEY_ID'] }}"
+        echo "::add-mask::${{ secrets[inputs.iam_user + '_SECRET_ACCESS_KEY'] }}"
+        echo "::set-output name=access_key_id::${{ secrets[inputs.iam_user + '_ACCESS_KEY_ID'] }}"
+        echo "::set-output name=secret_access_key::${{ secrets[inputs.iam_user + '_SECRET_ACCESS_KEY'] }}"
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ steps.retrieve_secrets.outputs.access_key_id }}
+        aws-secret-access-key: ${{ steps.retrieve_secrets.outputs.secret_access_key }}
+        aws-region: us-east-1
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install boto3 pytest
+
+    - name: Run Test Script
+      run: |
+        pytest test_scp_permissions.py --verbose

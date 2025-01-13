@@ -17,3 +17,8 @@ variable "target_workflow" {
   type = string
   description = "value"
 }
+
+variable "environment" {
+  type = string
+  description = "The environment that we're deploying into"
+}

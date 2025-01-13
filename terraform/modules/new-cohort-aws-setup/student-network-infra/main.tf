@@ -11,7 +11,7 @@ locals {
 }
 
 resource "aws_vpc" "student_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/16" # TODO: Does this eventually need variablized? I don't think so since it's a new account
 
   enable_dns_support   = true
   enable_dns_hostnames = true

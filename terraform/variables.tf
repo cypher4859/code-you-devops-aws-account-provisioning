@@ -36,3 +36,19 @@ variable "target_workflow" {
   type = string
   description = "The repository_dispatch in the github workflows to trigger"
 }
+
+variable "backend_bucket" {
+  description = "The name of the s3 bucket used for the terraform state backend"
+  type        = string
+}
+
+variable "backend_bucket_region" {
+  description = "The region that we want to use for bucket backend"
+  type        = string
+  default     = "us-east-2"
+}
+
+variable "environment" {
+  type = string
+  description = "The environment that we're deploying into"
+}

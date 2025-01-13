@@ -94,7 +94,7 @@ jobs:
       # Step 3: Initialize Terraform
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init -reconfigure
+        run: terraform init -reconfigure -backend-config=${{ github.ref_name }}.hcl
 
       # Step 4: Run Terraform Plan
       - name: Terraform Plan

@@ -5,11 +5,9 @@ terraform {
             version = "~> 5.0"
         }
     }
+
     backend "s3" {
-        bucket  = var.bucket_id
-        key    = "terraform/state/code-you/devops-with-aws/admin-provisioning/terraform.tfstate"
-        region = var.backend_bucket_region
-        encrypt = true
+      
     }
 }
 

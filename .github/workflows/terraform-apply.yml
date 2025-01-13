@@ -24,6 +24,7 @@ jobs:
   check-terraform-changes:
     name: Check for Terraform Changes
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     outputs:
       terraform_changed: ${{ steps.check.outputs.terraform_changed }}
     steps:
@@ -58,6 +59,7 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       id-token: write  # Required to exchange the GitHub token for AWS credentials
       contents: read   # Standard permission to read the repository
@@ -112,6 +114,7 @@ jobs:
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       id-token: write  # Required to exchange the GitHub token for AWS credentials
       contents: read   # Standard permission to read the repository

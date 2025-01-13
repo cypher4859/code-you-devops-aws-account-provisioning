@@ -14,6 +14,7 @@ jobs:
   upload-student-roster:
     name: Upload Student Roster
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
     permissions:
       id-token: write
       contents: read

@@ -19,12 +19,23 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Check out the repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Decode OIDC Token
-        run: |
-          echo "${{ secrets.GITHUB_ID_TOKEN }}" | base64 --decode | jq '.'
+      # Step 2: Checkout the `actions-oidc-debugger` repository
+      - name: Checkout actions-oidc-debugger
+        uses: actions/checkout@v3
+        with:
+          repository: github/actions-oidc-debugger
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./.github/actions/actions-oidc-debugger
+
+      # Step 3: Debug the OIDC Claims
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
+        with:
+          audience: 'sts.amazonaws.com'
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3

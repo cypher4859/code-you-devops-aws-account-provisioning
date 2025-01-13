@@ -61,12 +61,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
     permissions:
-      id-token: write  # Required to exchange the GitHub token for AWS credentials
-      contents: read   # Standard permission to read the repository
+      id-token: write  
+      contents: read   
     needs: [check-terraform-changes]
     if: needs.check-terraform-changes.outputs.terraform_changed == 'true'
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -85,23 +84,19 @@ jobs:
         run: echo "TF_VAR_students_json=$(jq -c . students.json)" >> $GITHUB_ENV
         
 
-      # Step 2: Setup Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.1  # Adjust this to your Terraform version
+          terraform_version: 1.5.1
 
-      # Step 3: Initialize Terraform
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init -reconfigure -backend-config=./envs/${{ github.ref_name }}.hcl
 
-      # Step 4: Run Terraform Plan
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan
 
-      # Step 5: Upload the plan file as an artifact
       - name: Upload Plan File
         uses: actions/upload-artifact@v3
         with:

@@ -21,21 +21,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      # Step 2: Checkout the `actions-oidc-debugger` repository
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v3
-        with:
-          repository: github/actions-oidc-debugger
-          ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./.github/actions/actions-oidc-debugger
-
-      # Step 3: Debug the OIDC Claims
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
-        with:
-          audience: 'sts.amazonaws.com'
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -51,7 +36,7 @@ jobs:
         
 
       - name: Install AWS CLI
-        run: sudo apt-get install -y awscli
+        run: sudo apt install -y awscli
 
       - name: Upload to S3 Bucket
         run: aws s3 cp students.csv s3://${{ env.TF_VAR_bucket_id }}/${{ env.CSV_DESTINATION_PREFIX }}

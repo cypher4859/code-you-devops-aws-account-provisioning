@@ -5,6 +5,8 @@ data "aws_s3_bucket" "primary_bucket" {
 }
 
 locals {
+    environment = var.environment
+
     account_id = data.aws_caller_identity.current.account_id
     student_new_users_output_json_file_name = "students.json"
     
@@ -26,7 +28,7 @@ module "setup-pipeline-access" {
     source = "../github-role-setup"
     account_id = local.account_id
     github_repo = local.github_repo
-    environment = var.environment
+    environment = local.environment
 }
 
 resource "aws_iam_role" "lambda_role" {

@@ -141,7 +141,10 @@ jobs:
 
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init -reconfigure -backend-config=./envs/${{ github.ref_name }}.hcl 
+        run: terraform init -reconfigure -backend-config=./envs/${{ github.ref_name }}.hcl
+
+      - name: Terraform Refresh
+        run: terraform refresh
 
       # Step 3: Download the plan artifact
       - name: Download Plan Artifact

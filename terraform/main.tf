@@ -35,7 +35,7 @@ module "first-time-setup" {
     github_repo = var.github_repo
     github_token = var.github_token
     environment = var.environment
-    target_workflow = ""
+    target_workflow = var.target_workflow
 }
 
 module "root_organization_setup" {

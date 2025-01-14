@@ -26,6 +26,7 @@ module "setup-pipeline-access" {
     source = "../github-role-setup"
     account_id = local.account_id
     github_repo = local.github_repo
+    environment = var.environment
 }
 
 resource "aws_iam_role" "lambda_role" {

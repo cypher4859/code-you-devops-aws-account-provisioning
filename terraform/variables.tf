@@ -41,3 +41,9 @@ variable "environment" {
   type = string
   description = "The environment that we're deploying into"
 }
+
+variable "secretsmanager_secret_id_pgppublickey" {
+  type = string
+  description = "The PGP Public Key used for encrypting passwords"
+  sensitive = true
+}

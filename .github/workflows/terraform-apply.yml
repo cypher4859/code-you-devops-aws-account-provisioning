@@ -167,11 +167,7 @@ jobs:
       - name: Upload Credentials File
         working-directory: ./terraform
         run: |
-          if aws s3 ls "s3://${{ env.TF_VAR_bucket_id }}/${{ env.CREDENTIALS_FILE_DESTINATION_PREFIX }}/codeyou_student_credentials_${{ github.ref_name }}.json" >/dev/null 2>&1; then
-            echo "File exists in S3. Updating..."
-          else
-            echo "File does not exist in S3. Creating..."
-            aws s3 cp codeyou_student_credentials_${{ github.ref_name }}.json s3://${{ env.TF_VAR_bucket_id }}/${{ env.CREDENTIALS_FILE_DESTINATION_PREFIX }}/codeyou_student_credentials_${{ github.ref_name }}.json
-          fi
+          aws s3 cp codeyou_student_credentials_${{ github.ref_name }}.json s3://${{ env.TF_VAR_bucket_id }}/${{ env.CREDENTIALS_FILE_DESTINATION_PREFIX }}/codeyou_student_credentials_${{ github.ref_name }}.json
+          
         env:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}

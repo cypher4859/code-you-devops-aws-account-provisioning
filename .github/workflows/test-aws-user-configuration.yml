@@ -1,4 +1,4 @@
-name: Test IAM User Permissions
+name: Test IAM User Login and permissions
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
     - name: Assume Role
       id: assume_role
       run: |
-        ROLE_SESSION_NAME="test-scp-session"
+        ROLE_SESSION_NAME="test-iam-user-session"
         CREDENTIALS=$(aws sts assume-role --role-arn ${{ github.event.inputs.role_arn }} \
           --role-session-name $ROLE_SESSION_NAME)
         export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.Credentials.AccessKeyId')

@@ -15,24 +15,12 @@ resource "local_file" "credentials_file" {
   filename = local.credentials_file_name
 }
 
-# Upload the JSON file to S3
-resource "null_resource" "force_recreate" {
-  triggers = {
-    timestamp = timestamp() # Current time will always change on every apply
-  }
-}
-
 resource "aws_s3_object" "credentials_file" {
   bucket       = data.aws_s3_bucket.bucket.id
   key          = "${local.bucket_path}${local.credentials_file_name}"
   source       = local_file.credentials_file.filename
   content_type = "application/json"
-
-  depends_on = [null_resource.force_recreate]
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  etag         = filemd5(local_file.credentials_file.filename)
 }
 
 # Delete the local file after a successful S3 upload

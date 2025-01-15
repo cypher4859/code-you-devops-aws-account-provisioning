@@ -48,13 +48,13 @@ module "root_account_provisioning" {
   admins_json = var.admins_json
 }
 
-data "aws_secretsmanager_secret" "pgp_public_key" {
-  name = var.secretsmanager_secret_id_pgppublickey
-}
+# data "aws_secretsmanager_secret" "pgp_public_key" {
+#   name = var.secretsmanager_secret_id_pgppublickey
+# }
 
-data "aws_secretsmanager_secret_version" "pgp_public_key_version" {
-  secret_id = data.aws_secretsmanager_secret.pgp_public_key.id
-}
+# data "aws_secretsmanager_secret_version" "pgp_public_key_version" {
+#   secret_id = data.aws_secretsmanager_secret.pgp_public_key.id
+# }
 
 # TODO: Would be prudent to add some logic so we can build out multiple cohort accounts if
 module "new_cohort_aws_setup" {

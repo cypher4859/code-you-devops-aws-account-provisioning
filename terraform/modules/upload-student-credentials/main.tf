@@ -18,7 +18,7 @@ resource "local_file" "credentials_file" {
 # Upload the JSON file to S3
 resource "aws_s3_object" "credentials_file" {
   bucket       = data.aws_s3_bucket.bucket.id
-  key          = local.credentials_file_name
+  key          = "${local.bucket_path}${local.credentials_file_name}"
   source       = local_file.credentials_file.filename
   content_type = "application/json"
 }

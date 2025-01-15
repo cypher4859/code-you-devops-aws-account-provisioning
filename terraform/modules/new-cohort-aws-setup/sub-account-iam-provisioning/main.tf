@@ -24,5 +24,5 @@ module "roles_and_permissions" {
 module "users_and_groups" {
     source = "./sub_account_users_and_groups"
     students_json = var.students_json
-    secretsmanager_secret_id_pgppublickey = var.secretsmanager_secret_id_pgppublickey
+    # secretsmanager_secret_id_pgppublickey = var.secretsmanager_secret_id_pgppublickey
 }

@@ -66,7 +66,7 @@ module "new_cohort_aws_setup" {
     management_billing_role_arn = module.root_account_provisioning.management_billing_role_arn
     management_org_id = module.root_organization_setup.management_org_id
     management_admin_group_arn = module.root_account_provisioning.management_admin_group_arn
-    secretsmanager_secret_id_pgppublickey = "" # FIXME: This should be removed
+    # secretsmanager_secret_id_pgppublickey = "" # FIXME: This should be removed
     providers = {
       aws = aws.student_account
       aws.management_account = aws

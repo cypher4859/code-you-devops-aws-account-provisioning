@@ -32,8 +32,8 @@ variable "management_billing_role_arn" {
     type = string
  }
 
- variable "secretsmanager_secret_id_pgppublickey" {
-    type = string
-    description = "The PGP Public Key used for encrypting passwords"
-    sensitive = true
- }
+#  variable "secretsmanager_secret_id_pgppublickey" {
+#     type = string
+#     description = "The PGP Public Key used for encrypting passwords"
+#     sensitive = true
+#  }

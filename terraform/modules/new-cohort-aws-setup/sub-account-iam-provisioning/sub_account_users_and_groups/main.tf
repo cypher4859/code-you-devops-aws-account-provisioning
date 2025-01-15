@@ -7,7 +7,7 @@ terraform {
 }
 
 locals {
-    pgppublickey                    = var.secretsmanager_secret_id_pgppublickey
+    # pgppublickey                    = var.secretsmanager_secret_id_pgppublickey
     staff_administrators_group_name = "CodeYouStaffAdministratorsGroup"
     staff_billing_group_name        = "CodeYouStaffBillingGroup"
     mentor_group_name               = "CodeYouMentorGroup"

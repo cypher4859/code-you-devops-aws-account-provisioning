@@ -162,7 +162,7 @@ jobs:
 
       - name: Output Credentials File
         working-directory: ./terraform
-        run: terraform output student_passwords > codeyou_student_credentials_${{ github.ref_name }}.json
+        run: terraform output -json student_passwords > codeyou_student_credentials_${{ github.ref_name }}.json
 
       - name: Upload Credentials File
         working-directory: ./terraform

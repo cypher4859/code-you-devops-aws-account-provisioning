@@ -21,3 +21,9 @@ variable "management_billing_role_arn" {
 variable "management_admin_group_arn" {
     type = string
 }
+
+variable "secretsmanager_secret_id_pgppublickey" {
+    type = string
+    description = "The PGP Public Key used for Encrypting Passwords"
+    sensitive = true
+}

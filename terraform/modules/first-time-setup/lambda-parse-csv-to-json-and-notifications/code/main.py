@@ -15,7 +15,7 @@ def main():
     local_json_file_path = f"/tmp/{output_json_file_name}"
 
     # Define the header names manually
-    fieldnames = ['name', 'email']
+    fieldnames = ['email', 'name']
 
     # Open the CSV file
     try:

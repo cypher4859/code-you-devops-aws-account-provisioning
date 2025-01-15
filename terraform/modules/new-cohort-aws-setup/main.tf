@@ -17,6 +17,7 @@ data "aws_caller_identity" "student_current" {}
 locals {
   org_account_ops_role_name = "OrganizationAccountAccessRole"
   management_account_id = data.aws_caller_identity.management_current.account_id
+  secretsmanager_secret_id_pgppublickey = var.secretsmanager_secret_id_pgppublickey
 }
 # Grab file of students from S3
 
@@ -39,6 +40,7 @@ module "iam-entities" {
   management_billing_role_arn = var.management_billing_role_arn
   management_org_id = var.management_org_id
   management_admin_group_arn = var.management_admin_group_arn
+  secretsmanager_secret_id_pgppublickey = local.secretsmanager_secret_id_pgppublickey
   depends_on = [ module.new_aws_account ]
   providers = {
     aws = aws.student_account

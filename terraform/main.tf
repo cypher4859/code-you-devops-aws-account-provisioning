@@ -26,7 +26,7 @@ provider "aws" {
       role_arn = module.new_cohort_aws_setup.new_account_ops_role_arn
     }
 
-    # profile = "blackhat-user"
+    #profile = "blackhat-user"
 }
 
 module "first-time-setup" {
@@ -48,6 +48,14 @@ module "root_account_provisioning" {
   admins_json = var.admins_json
 }
 
+data "aws_secretsmanager_secret" "pgp_public_key" {
+  name = var.secretsmanager_secret_id_pgppublickey
+}
+
+data "aws_secretsmanager_secret_version" "pgp_public_key_version" {
+  secret_id = data.aws_secretsmanager_secret.pgp_public_key.id
+}
+
 # TODO: Would be prudent to add some logic so we can build out multiple cohort accounts if
 module "new_cohort_aws_setup" {
     source = "./modules/new-cohort-aws-setup"
@@ -58,6 +66,7 @@ module "new_cohort_aws_setup" {
     management_billing_role_arn = module.root_account_provisioning.management_billing_role_arn
     management_org_id = module.root_organization_setup.management_org_id
     management_admin_group_arn = module.root_account_provisioning.management_admin_group_arn
+    secretsmanager_secret_id_pgppublickey = data.aws_secretsmanager_secret_version.pgp_public_key_version.secret_string
     providers = {
       aws = aws.student_account
       aws.management_account = aws
@@ -70,4 +79,11 @@ module "post_account_provisioning" {
     root_administrators_group_name = module.root_account_provisioning.management_administrators_group_name
     sub_account_id = module.new_cohort_aws_setup.new_account_id
     student_acct_staff_administrators_role_arn = module.new_cohort_aws_setup.staff_administrators_role_arn
+}
+
+module "upload_student_credentials" {
+    source                  = "./modules/upload-student-credentials"
+    bucket                  = var.bucket_id
+    students_credentials    = module.new_cohort_aws_setup.student_passwords
+    environment             = var.environment
 }

@@ -28,9 +28,9 @@ def test_iam_user_login(access_key_id, secret_access_key, region):
         print(f"Error: {e.response['Error']['Message']}")
 
 # Replace these with the new user's credentials
-ACCESS_KEY_ID = os.environ.get("E2E_ACCESS_KEY")
-SECRET_ACCESS_KEY = os.environ.get("E2E_SECRET_KEY")
-DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "us-east-2")
+ACCESS_KEY_ID = os.environ.get("E2E_ACCESS_KEY", os.environ.get("AWS_ACCESS_KEY_ID"))
+SECRET_ACCESS_KEY = os.environ.get("E2E_SECRET_KEY", os.environ.get("AWS_SECRET_ACCESS_KEY"))
+DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", os.environ.get("AWS_REGION", "us-east-2"))
 
 # Call the function
 test_iam_user_login(ACCESS_KEY_ID, SECRET_ACCESS_KEY, DEFAULT_REGION)

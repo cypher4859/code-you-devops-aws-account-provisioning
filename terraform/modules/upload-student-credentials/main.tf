@@ -21,6 +21,12 @@ resource "aws_s3_object" "credentials_file" {
   source       = local_file.credentials_file.filename
   content_type = "application/json"
   etag         = filemd5(local_file.credentials_file.filename)
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [local_file.credentials_file]
 }
 
 # Delete the local file after a successful S3 upload

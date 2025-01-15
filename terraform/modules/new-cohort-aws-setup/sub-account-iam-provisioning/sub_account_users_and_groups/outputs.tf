@@ -5,7 +5,12 @@ output "students" {
 
 output "student_passwords" {
   value = {
-    for key, user in aws_iam_user.student_user : user.name => aws_iam_user_login_profile.student_user_login[key].encrypted_password
+    for key, user in aws_iam_user.student_user : user.name => { 
+      email             = local.students[key].email
+      password          = aws_iam_user_login_profile.student_user_login[key].password
+      access_key_id     = aws_iam_access_key.student_user_access_keys[key].id
+      secret_access_key = aws_iam_access_key.student_user_access_keys[key].secret
+    }
   }
   sensitive = true
 }

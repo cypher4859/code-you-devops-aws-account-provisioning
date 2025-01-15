@@ -15,7 +15,7 @@ output "staff_administrators_role_arn" {
   value = module.new_cohort_aws_setup.staff_administrators_role_arn
 }
 
-output "debug_pgp_key" {
-  value     = data.aws_secretsmanager_secret_version.pgp_public_key_version.secret_string
-  sensitive = true
-}
+# output "debug_pgp_key" {
+#   value     = data.aws_secretsmanager_secret_version.pgp_public_key_version.secret_string
+#   sensitive = true
+# }

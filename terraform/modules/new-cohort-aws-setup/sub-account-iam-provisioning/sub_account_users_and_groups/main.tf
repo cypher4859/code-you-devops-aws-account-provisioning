@@ -7,6 +7,7 @@ terraform {
 }
 
 locals {
+    pgppublickey                    = var.secretsmanager_secret_id_pgppublickey
     staff_administrators_group_name = "CodeYouStaffAdministratorsGroup"
     staff_billing_group_name        = "CodeYouStaffBillingGroup"
     mentor_group_name               = "CodeYouMentorGroup"
@@ -41,12 +42,18 @@ resource "aws_iam_user" "student_user" {
     }
 }
 
-resource "aws_iam_user_login_profile" "student_user_login" {
+resource "aws_iam_access_key" "student_user_access_keys" {
   for_each = local.students
-  user                      = aws_iam_user.student_user[each.key].name  # Reference to the IAM user you've created
-  password_reset_required   = true       # Optionally force the user to reset the password on first login
-  password_length           = 16
-#   pgp_key                   = "keybase:username"         # PGP key to secure the password output (optional)
+  user     = aws_iam_user.student_user[each.key].name
+}
+
+
+
+resource "aws_iam_user_login_profile" "student_user_login" {
+  for_each                = local.students
+  user                    = aws_iam_user.student_user[each.key].name
+  password_reset_required = true
+  # pgp_key                 = local.pgppublickey
 }
 
 

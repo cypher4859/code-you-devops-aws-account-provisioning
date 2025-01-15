@@ -12,7 +12,7 @@ data "aws_s3_bucket" "bucket" {
 # Generate the output as a local JSON file
 resource "local_file" "credentials_file" {
   content = jsonencode(local.student_credentials)
-  filename = local.credentials_file_name
+  filename = "${path.module}/${local.credentials_file_name}"
 }
 
 resource "aws_s3_object" "credentials_file" {
@@ -20,11 +20,6 @@ resource "aws_s3_object" "credentials_file" {
   key          = "${local.bucket_path}${local.credentials_file_name}"
   source       = local_file.credentials_file.filename
   content_type = "application/json"
-  etag         = filemd5(local_file.credentials_file.filename)
-
-  lifecycle {
-    create_before_destroy = true
-  }
 
   depends_on = [local_file.credentials_file]
 }
@@ -34,6 +29,7 @@ resource "null_resource" "delete_credentials_file" {
   depends_on = [aws_s3_object.credentials_file]
 
   provisioner "local-exec" {
-    command = "rm -f ${local_file.credentials_file.filename}"
+
+    command = "rm -f ${path.module}/${local.credentials_file_name}"
   }
 }

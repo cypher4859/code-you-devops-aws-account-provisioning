@@ -7,7 +7,7 @@ terraform {
     }
 }
 
-# FIXME: This needs turned back on for a fresh account
+# FIXME: TURN ON for new root account provisioning, i.e. on a brand new account that will host the Org
 # resource "aws_organizations_organization" "root_org" {
 #   feature_set = "ALL"
 # }
@@ -30,11 +30,6 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
       "ec2:ModifyInstanceAttribute"
     ]
     resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "ec2:InstanceType"
-      values   = ["t2.micro", "t3.micro"] # Free-tier instance types
-    }
   }
 
   # Allow managing ECS services and Task Definitions
@@ -84,18 +79,6 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
       "cloudwatch:DeleteAlarms"
     ]
     resources = ["*"]
-  }
-
-  # Deny any operations outside the free-tier scope
-  statement {
-    sid       = "DenyNonFreeTierOperations"
-    actions   = ["*"]
-    resources = ["*"]
-    condition {
-      test     = "Bool"
-      variable = "aws:RequestTag/AllowFreeTierOnly"
-      values   = ["false"]
-    }
   }
 }
 

@@ -235,4 +235,55 @@ data "aws_iam_policy_document" "student_permission_policy" {
       values   = ["$${aws:userid}"]
     }
   }
+
+  statement {
+  sid      = "ChangePassword"
+  effect   = "Allow"
+  actions  = ["iam:ChangePassword"]
+  resources = ["arn:aws:iam::*:user/$${aws:username}"]
+}
+
+statement {
+  sid      = "ManageAccessKeys"
+  effect   = "Allow"
+  actions  = [
+    "iam:CreateAccessKey",
+    "iam:DeleteAccessKey",
+    "iam:UpdateAccessKey",
+    "iam:ListAccessKeys"
+  ]
+  resources = ["arn:aws:iam::*:user/$${aws:username}"]
+}
+
+statement {
+  sid      = "ManageMFADevices"
+  effect   = "Allow"
+  actions  = [
+    "iam:ListMFADevices",
+    "iam:CreateVirtualMFADevice",
+    "iam:EnableMFADevice",
+    "iam:DeactivateMFADevice",
+    "iam:DeleteVirtualMFADevice",
+    "iam:ResyncMFADevice"
+  ]
+  resources = ["arn:aws:iam::*:user/$${aws:username}"]
+}
+
+statement {
+  sid      = "ViewUserDetails"
+  effect   = "Allow"
+  actions  = ["iam:GetUser"]
+  resources = ["arn:aws:iam::*:user/$${aws:username}"]
+}
+
+statement {
+  sid      = "TagManagement"
+  effect   = "Allow"
+  actions  = [
+    "iam:TagUser",
+    "iam:UntagUser"
+  ]
+  resources = ["arn:aws:iam::*:user/$${aws:username}"]
+}
+
 }

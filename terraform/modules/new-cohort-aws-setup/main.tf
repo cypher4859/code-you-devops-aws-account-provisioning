@@ -39,6 +39,7 @@ module "iam-entities" {
   management_billing_role_arn = var.management_billing_role_arn
   management_org_id = var.management_org_id
   management_admin_group_arn = var.management_admin_group_arn
+  root_account_staff_admin_users = var.root_account_staff_admin_users
   # secretsmanager_secret_id_pgppublickey = local.secretsmanager_secret_id_pgppublickey
   depends_on = [ module.new_aws_account ]
   providers = {

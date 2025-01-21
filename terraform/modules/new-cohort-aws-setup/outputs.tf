@@ -10,6 +10,10 @@ output "staff_administrators_role_arn" {
   value = module.iam-entities.staff_administrators_role_arn
 }
 
+output "subaccount_staff_administrators_role_arn" {
+  value = module.iam-entities.staff_administrators_role_arn
+}
+
 output "student_passwords" {
   value = module.iam-entities.student_passwords
   sensitive = true

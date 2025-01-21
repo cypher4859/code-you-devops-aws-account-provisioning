@@ -15,15 +15,8 @@ output "staff_administrators_role_arn" {
   value = module.new_cohort_aws_setup.staff_administrators_role_arn
 }
 
-output "bucket_path_to_credentials_file" {
-  description = "The key path in the bucket to get the credential file"
-  value = module.upload_student_credentials.bucket_path_to_credentials_file
-  sensitive = true
-}
-
-output "bucket_for_credentials" {
-  description = "The bucket that holds the credential file"
-  value = module.upload_student_credentials.bucket_for_credentials
+output "root_admin_users" {
+  value = module.root_account_provisioning.management_admin_iam_users
   sensitive = true
 }
 

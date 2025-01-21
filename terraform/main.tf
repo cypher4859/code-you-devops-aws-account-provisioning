@@ -66,7 +66,7 @@ module "new_cohort_aws_setup" {
     management_billing_role_arn = module.root_account_provisioning.management_billing_role_arn
     management_org_id = module.root_organization_setup.management_org_id
     management_admin_group_arn = module.root_account_provisioning.management_admin_group_arn
-    # secretsmanager_secret_id_pgppublickey = "" # FIXME: This should be removed
+    root_account_staff_admin_users = module.root_account_provisioning.management_admin_iam_users
     providers = {
       aws = aws.student_account
       aws.management_account = aws
@@ -78,7 +78,9 @@ module "post_account_provisioning" {
     source = "./modules/post-account-setup-provisioning"
     root_administrators_group_name = module.root_account_provisioning.management_administrators_group_name
     sub_account_id = module.new_cohort_aws_setup.new_account_id
-    student_acct_staff_administrators_role_arn = module.new_cohort_aws_setup.staff_administrators_role_arn
+    root_acct_staff_administrators_role_arn = module.root_account_provisioning.management_admin_role_arn
+    sub_account_staff_administrators_role_arn = module.new_cohort_aws_setup.subaccount_staff_administrators_role_arn
+    root_acct_staff_administrators_role_name = module.root_account_provisioning.managememnt_admin_role_name
 }
 
 module "upload_student_credentials" {

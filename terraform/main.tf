@@ -26,7 +26,7 @@ provider "aws" {
       role_arn = module.new_cohort_aws_setup.new_account_ops_role_arn
     }
 
-    #profile = "blackhat-user"
+    #profile = "blackhat-user" # Turn this on for local deployment
 }
 
 module "first-time-setup" {

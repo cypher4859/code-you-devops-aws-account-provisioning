@@ -29,12 +29,12 @@ output "management_billing_role_arn" {
 output "management_admin_iam_users" {
     description = "The list of IAM Admin users."
     value = {
-        for user_key, user in aws_iam_user.admin_user :
-        user.name => {
+        for user_key, user in aws_iam_user.admin_user : local.administrators[user_key].name => {
             arn         = user.arn
             name        = user.name
             email       = local.administrators[user_key].email
             tags        = user.tags
+            password    = aws_iam_user_login_profile.admin_user_login[user_key].password
         }
     }
     sensitive = true

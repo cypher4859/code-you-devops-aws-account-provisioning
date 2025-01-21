@@ -45,6 +45,12 @@ resource "aws_iam_user" "admin_user" {
     }
 }
 
+resource "aws_iam_user_login_profile" "admin_user_login" {
+  for_each                = local.administrators
+  user                    = aws_iam_user.admin_user[each.key].name
+  password_reset_required = true
+}
+
 resource "aws_iam_user_group_membership" "administrators_user_membership" {
     for_each = local.administrators
     user = aws_iam_user.admin_user[each.key].name

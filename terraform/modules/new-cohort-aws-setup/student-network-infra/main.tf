@@ -8,6 +8,26 @@ terraform {
 
 locals {
   student_map = { for idx, student in var.students : idx => student }
+  subnets = flatten([
+    for student_id, student_name in local.student_map : [
+      {
+        id          = student_id
+        name        = student_name
+        index       = 1
+        cidr_offset = student_id * 2
+        az          = "us-east-2a"
+        # az_identifer = "a"
+      },
+      {
+        id          = student_id
+        name        = student_name
+        index       = 2
+        cidr_offset = student_id * 2 + 1
+        az          = "us-east-2b"
+        # az_identifer = "b"
+      }
+    ]
+  ])
 }
 
 resource "aws_vpc" "student_vpc" {
@@ -45,17 +65,10 @@ resource "aws_route_table" "student_route_table" {
 
 
 resource "aws_security_group" "student_sg" {
-  name        = "student-security-group"
+  for_each = { for idx, subnet in local.subnets : idx => subnet }
+  name        = "student-default-sg-${each.value.name}"
   description = "Allow SSH ingress from the internet and all egress"
   vpc_id      = aws_vpc.student_vpc.id
-
-  ingress {
-    description      = "SSH access"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
 
   egress {
     description      = "Allow all outbound traffic"
@@ -66,23 +79,47 @@ resource "aws_security_group" "student_sg" {
   }
 
   tags = {
-    Name = "student-sg"
+    Name = "student-default-sg-${each.value.name}"
+    Owner = each.value.name
   }
 }
 
+
 resource "aws_subnet" "student_subnet" {
-  for_each = local.student_map
+  for_each = { for idx, subnet in local.subnets : idx => subnet }
+
   vpc_id            = aws_vpc.student_vpc.id
-  cidr_block        = "10.0.${each.key + 1}.0/24"
-  availability_zone = "us-east-2a"
+  cidr_block        = "10.0.${each.value.cidr_offset}.0/27"
+  availability_zone = each.value.az
 
   tags = {
-    Name = "student-cohort-${each.value}"
+    Name = "student-cohort-${each.value.name}-${each.value.index}"
   }
 }
 
 resource "aws_route_table_association" "student_route_table_association" {
   for_each = aws_subnet.student_subnet
+
   subnet_id      = each.value.id
   route_table_id = aws_route_table.student_route_table.id
 }
+
+# resource "aws_subnet" "student_subnet" {
+#   for_each = { for idx, subnet in local.subnets : idx => subnet }
+
+#   vpc_id            = aws_vpc.student_vpc.id
+#   cidr_block        = "10.0.${each.value.cidr_offset}.0/24"
+#   availability_zone = each.value.az
+
+#   tags = {
+#     Name = "student-cohort-${each.value.name}-${each.value.index}"
+#   }
+# }
+
+
+
+# resource "aws_route_table_association" "student_route_table_association" {
+#   for_each = aws_subnet.student_subnet
+#   subnet_id      = each.value.id
+#   route_table_id = aws_route_table.student_route_table.id
+# }

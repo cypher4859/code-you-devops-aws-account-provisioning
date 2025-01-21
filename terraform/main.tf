@@ -88,4 +88,5 @@ module "upload_student_credentials" {
     bucket                  = var.bucket_id
     students_credentials    = module.new_cohort_aws_setup.student_passwords
     environment             = var.environment
+    email                   = var.ses_sender_email
 }

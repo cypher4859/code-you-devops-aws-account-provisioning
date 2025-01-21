@@ -66,7 +66,7 @@ resource "aws_route_table" "student_route_table" {
 
 resource "aws_security_group" "student_sg" {
   for_each = { for idx, subnet in local.subnets : idx => subnet }
-  name        = "student-default-sg-${each.value.name}"
+  name        = "student-default-sg-${each.value.name}-${each.value.index}"
   description = "Allow SSH ingress from the internet and all egress"
   vpc_id      = aws_vpc.student_vpc.id
 
@@ -79,7 +79,7 @@ resource "aws_security_group" "student_sg" {
   }
 
   tags = {
-    Name = "student-default-sg-${each.value.name}"
+    Name = "student-default-sg-${each.value.name}-${each.value.index}"
     Owner = each.value.name
   }
 }

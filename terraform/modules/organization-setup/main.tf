@@ -18,26 +18,12 @@ data "aws_organizations_organization" "root_org" {}
 # - Enforce tagging of `Owner`
 
 data "aws_iam_policy_document" "free_tier_only_scp" {
-  # Allow managing EC2 instances within free-tier limits
-  statement {
-    sid       = "AllowEC2FreeTier"
-    actions   = [
-      "ec2:RunInstances",
-      "ec2:TerminateInstances",
-      "ec2:Describe*",
-      "ec2:StopInstances",
-      "ec2:StartInstances",
-      "ec2:ModifyInstanceAttribute"
-    ]
-    resources = ["*"]
-  }
-
   # Allow managing ECS services and Task Definitions
   statement {
     sid       = "AllowECSManagement"
     actions   = [
       "ecs:*", # Full ECS access for services and task definitions
-      "iam:PassRole" # Required to associate roles with ECS tasks
+      "iam:*" # Required to associate roles with ECS tasks
     ]
     resources = ["*"]
   }
@@ -46,10 +32,7 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
   statement {
     sid       = "AllowAutoScaling"
     actions   = [
-      "autoscaling:*",
-      "ec2:DescribeLaunchTemplates",
-      "ec2:CreateLaunchTemplate",
-      "ec2:DeleteLaunchTemplate"
+      "autoscaling:*"
     ]
     resources = ["*"]
   }
@@ -58,12 +41,7 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
   statement {
     sid       = "AllowS3FreeTier"
     actions   = [
-      "s3:CreateBucket",
-      "s3:DeleteBucket",
-      "s3:PutObject",
-      "s3:GetObject",
-      "s3:ListBucket",
-      "s3:DeleteObject"
+      "s3:*"
     ]
     resources = ["*"]
   }
@@ -72,11 +50,55 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
   statement {
     sid       = "AllowCloudWatchFreeTier"
     actions   = [
-      "cloudwatch:PutMetricData",
-      "cloudwatch:GetMetricData",
-      "cloudwatch:ListMetrics",
-      "cloudwatch:PutMetricAlarm",
-      "cloudwatch:DeleteAlarms"
+      "cloudwatch:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "AllowCloudFormation"
+    actions   = [
+      "cloudformation:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "AllowTagging"
+    actions   = [
+      "ec2:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "AllowLoadBalancing"
+    actions   = [
+      "elasticloadbalancing:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "AllowLogs"
+    actions   = [
+      "logs:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "AllowSSM"
+    actions   = [
+      "ssm:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "AllowECR"
+    actions   = [
+      "ecr:*"
     ]
     resources = ["*"]
   }

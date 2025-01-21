@@ -1,6 +1,21 @@
 output "students" {
-    description = "List of student IAM users"
-    value = local.student_names
+  description = "List of student IAM users"
+  value = local.student_names
+}
+
+output "student_iam_users" {
+  description = "The IAM users we created for students"
+  value = aws_iam_user.student_user
+}
+
+output "student_group_arn" {
+  description = "The IAM Group ARN that will hold students"
+  value = aws_iam_group.student_group.arn
+}
+
+output "student_group_name" {
+  description = "The IAM Group name that will hold students"
+  value = aws_iam_group.student_group.name
 }
 
 output "student_passwords" {

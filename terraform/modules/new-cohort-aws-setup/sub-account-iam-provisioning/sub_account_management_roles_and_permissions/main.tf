@@ -71,18 +71,3 @@ resource "aws_iam_role_policy" "mentor_role_permissions_policy" {
   policy = data.aws_iam_policy_document.mentor_permission_policy.json
 }
 
-resource "aws_iam_role" "student_role" {
-  name               = local.student_role_name
-  assume_role_policy = data.aws_iam_policy_document.student_trust_policy.json
-
-  tags = {
-    Environment = "Student Cohort"
-    RoleType    = "Student"
-  }
-}
-
-resource "aws_iam_role_policy" "student_role_permissions_policy" {
-  name   = "CodeYouStaffStudentPolicy"
-  role   = aws_iam_role.student_role.id
-  policy = data.aws_iam_policy_document.student_permission_policy.json
-}

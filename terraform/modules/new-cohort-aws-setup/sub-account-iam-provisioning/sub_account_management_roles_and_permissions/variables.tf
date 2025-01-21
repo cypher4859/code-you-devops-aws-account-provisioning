@@ -40,3 +40,8 @@ variable "student_role_name" {
 variable "management_admin_group_arn" {
     type = string
 }
+
+variable "root_account_staff_admin_users" {
+    description = "The list of admin users that the subaccount admin role will trust"
+    type = list
+}

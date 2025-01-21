@@ -2,12 +2,13 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
+      version = "~> 5.0"
+      configuration_aliases = [aws.management_account]
     }
   }
 }
 
 locals {
-    # pgppublickey                    = var.secretsmanager_secret_id_pgppublickey
     staff_administrators_group_name = "CodeYouStaffAdministratorsGroup"
     staff_billing_group_name        = "CodeYouStaffBillingGroup"
     mentor_group_name               = "CodeYouMentorGroup"
@@ -40,6 +41,8 @@ resource "aws_iam_user" "student_user" {
         Environment = "Student Cohort"
         RoleType    = "StudentUser"
     }
+
+    force_destroy = true # FIXME: Needs solidified on what we're gonna do about this
 }
 
 resource "aws_iam_access_key" "student_user_access_keys" {
@@ -53,7 +56,6 @@ resource "aws_iam_user_login_profile" "student_user_login" {
   for_each                = local.students
   user                    = aws_iam_user.student_user[each.key].name
   password_reset_required = true
-  # pgp_key                 = local.pgppublickey
 }
 
 

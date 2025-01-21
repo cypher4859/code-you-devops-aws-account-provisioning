@@ -22,6 +22,9 @@ variable "management_admin_group_arn" {
     type = string
 }
 
+variable "root_account_staff_admin_users" {
+}
+
 # variable "secretsmanager_secret_id_pgppublickey" {
 #     type = string
 #     description = "The PGP Public Key used for Encrypting Passwords"

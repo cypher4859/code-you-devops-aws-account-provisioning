@@ -9,20 +9,34 @@ terraform {
 }
 
 # FIXME: Roles and permissions needs fixed
-module "roles_and_permissions" {
-    source = "./sub_account_roles_and_permissions"
+module "management_roles_and_permissions" {
+    source = "./sub_account_management_roles_and_permissions"
     management_admin_role_arn = var.management_admin_role_arn
     management_billing_role_arn = var.management_billing_role_arn
     management_org_id = var.management_org_id
     management_admin_group_arn = var.management_admin_group_arn
+    root_account_staff_admin_users = [for iam_user in var.root_account_staff_admin_users : iam_user.arn] #var.root_account_staff_admin_users
     providers = {
       aws = aws
       aws.management_account = aws.management_account
     }
 }
 
-module "users_and_groups" {
+module "student_account_users_and_groups" {
     source = "./sub_account_users_and_groups"
     students_json = var.students_json
-    # secretsmanager_secret_id_pgppublickey = var.secretsmanager_secret_id_pgppublickey
+    providers = {
+      aws = aws
+      aws.management_account = aws.management_account
+    }
+}
+
+module "subaccount_permissions_for_students" {
+    source = "./sub_account_student_permissions_provisioning"
+    student_role_name = "DevOps-CodeYou-Student-Role"
+    student_group_name = module.student_account_users_and_groups.student_group_name
+    providers = {
+      aws = aws
+      aws.management_account = aws.management_account
+    }
 }

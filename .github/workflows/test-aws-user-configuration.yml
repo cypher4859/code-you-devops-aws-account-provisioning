@@ -47,7 +47,7 @@ jobs:
     - name: Download User Credentials JSON from S3
       id: download_json
       run: |
-        aws s3 cp s3://${{ env.BUCKET }} }}/environment/aws/management/data-uploads/student-credentials/codeyou_student_credentials_${{ github.ref_name }}.json ./student_credentials.json
+        aws s3 cp s3://${{ env.BUCKET }}/environment/aws/management/data-uploads/student-credentials/codeyou_student_credentials_${{ github.ref_name }}.json ./student_credentials.json
       env:
         AWS_ACCESS_KEY_ID: ${{ steps.assume_role.outputs.access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ steps.assume_role.outputs.secret_access_key }}

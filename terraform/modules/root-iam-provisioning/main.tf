@@ -1,6 +1,6 @@
 locals {
   staff_administrators_group_policy_name = "CodeYou-Mamangement-AdministratorsGroup"
-  staff_administrators_role_name = "CrossAccount-CodeYou-Staff-Administrators-Role"
+  crossaccount_staff_administrators_role_name = "CrossAccount-CodeYou-Staff-Administrators-Role"
   staff_billing_role_name = "CrossAccount-CodeYou-Staff-Billing-Role"
   staff_administrators_group_name = "CodeYouAdministratorsGroup"
   staff_billing_group_name = "CodeYouBillingUsersGroup"
@@ -10,7 +10,7 @@ locals {
 }
 
 resource "aws_iam_role" "cross_account_staff_administrators_role" {
-  name               = local.staff_administrators_role_name
+  name               = local.crossaccount_staff_administrators_role_name
   assume_role_policy = data.aws_iam_policy_document.staff_administrators_trust_policy.json
 
   tags = {

@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "staff_administrators_trust_policy" {
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${local.account_id}:root"
+        "*"
       ]
     }
 
@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "staff_billing_trust_policy" {
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${local.account_id}:root"
+        "*"
       ]
     }
 

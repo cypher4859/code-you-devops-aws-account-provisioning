@@ -80,7 +80,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logging_policy" {
   role       = aws_iam_role.lambda_role.name
 }
 
-# FIXME: This will end up being a reusable module for mentors as well
+# TODO: This will end up being a reusable module for mentors as well
 module "setup-lambda-csv-to-json" {
   source = "./lambda-parse-csv-to-json-and-notifications"
   bucket = local.bucket

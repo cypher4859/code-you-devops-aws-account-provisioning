@@ -15,6 +15,7 @@ data "aws_iam_policy_document" "admin_group_permissions_policy" {
     ]
 
     resources = [
+      local.sub_account_staff_administrators_role_arn,
       local.staff_administrators_role_arn
     ]
   }

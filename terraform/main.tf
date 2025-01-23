@@ -38,6 +38,12 @@ module "first-time-setup" {
     target_workflow = var.target_workflow
 }
 
+module "root_organization_cloudtrail" {
+    count = var.environment == "production" ? 1 : 0
+    source = "./modules/cloudtrail-setup"
+    environment = var.environment
+}
+
 module "root_organization_setup" {
     source = "./modules/organization-setup"
     admins_json = var.admins_json

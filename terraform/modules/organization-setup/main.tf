@@ -102,6 +102,14 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    sid     = "AllowLambda"
+    actions = [
+      "lambda:*"
+    ]
+    resources = ["*"]
+  }
 }
 
 

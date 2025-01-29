@@ -14,9 +14,6 @@ terraform {
 
 data "aws_organizations_organization" "root_org" {}
 
-# TODO: Need to fill out the SCP
-# - Enforce tagging of `Owner`
-
 data "aws_iam_policy_document" "free_tier_only_scp" {
   # Allow managing ECS services and Task Definitions
   statement {
@@ -24,6 +21,30 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
     actions   = [
       "ecs:*", # Full ECS access for services and task definitions
       "iam:*" # Required to associate roles with ECS tasks
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid         = "AllowKMS"
+    actions     = [
+      "kms:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid         = "AllowDynamoDB"
+    actions     = [
+      "dynamodb:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid         = "AllowRDS"
+    actions     = [
+      "rds:*"
     ]
     resources = ["*"]
   }
@@ -64,6 +85,14 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
   }
 
   statement {
+    sid       = "AllowCloudTrail"
+    actions   = [
+      "cloudtrail:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     sid       = "AllowTagging"
     actions   = [
       "ec2:*"
@@ -75,6 +104,14 @@ data "aws_iam_policy_document" "free_tier_only_scp" {
     sid       = "AllowLoadBalancing"
     actions   = [
       "elasticloadbalancing:*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid         = "AllowEFS"
+    actions     = [
+      "elasticfilesystem:*"
     ]
     resources = ["*"]
   }

@@ -55,6 +55,11 @@ module "student-network-infrastructure" {
   depends_on = [ module.iam-entities ]
 }
 
+# module "student-cloudtrail" {
+#   source = "./sub-account-cloudtrail"
+#   environment = var.environment
+# }
+
 # module "github-role-authentication" {
 #   source = "../github-role-setup"
 #   new_account_id = module.new_aws_account.new_account_id

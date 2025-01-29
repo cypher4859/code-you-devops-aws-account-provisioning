@@ -18,3 +18,7 @@ output "student_passwords" {
   value = module.iam-entities.student_passwords
   sensitive = true
 }
+
+output "observability_role_arn" {
+  value = module.iam-entities.observability_role_arn
+}

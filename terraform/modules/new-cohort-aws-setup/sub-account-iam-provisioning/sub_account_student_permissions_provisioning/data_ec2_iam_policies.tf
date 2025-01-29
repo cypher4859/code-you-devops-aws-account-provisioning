@@ -23,84 +23,183 @@ data "aws_iam_policy_document" "student_trust_policy" {
 
 data "aws_iam_policy_document" "student_owner_permission_policy" {
   statement {
-    sid    = "SQSPermissions"
+    sid    = "SQSCreationAndRead"
     effect = "Allow"
     actions = [
-      "sqs:*"
+      "sqs:CreateQueue",
+      "sqs:ListQueues",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
+      "sqs:ListQueueTags",
+      "sqs:TagQueue",
+      "sqs:UntagQueue"
     ]
     resources = ["*"]
+}
+
+  statement {
+    sid    = "SQSUpdateAndDelete"
+    effect = "Allow"
+    actions = [
+      "sqs:DeleteQueue",
+      "sqs:SetQueueAttributes",
+    ]
+    resources = ["*"]
+    
     condition {
       test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }
   
 
   statement {
-    sid    = "SNSPermissions"
+    sid    = "SNSCreateAndRead"
     effect = "Allow"
     actions = [
-      "sns:*"
+      "sns:CreateTopic",
+      "sns:ListTopics",
+      "sns:GetTopicAttributes",
+      "sns:ListTagsForResource",
+      "sns:Subscribe",
+      "sns:TagResource",
+      "sns:UntagResource"
     ]
     resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
-      values   = ["$${aws:username}"]
-    }
   }
 
   statement {
-    sid    = "S3Permissions"
+    sid    = "SNSUpdateAndDelete"
     effect = "Allow"
     actions = [
-      "s3:*"
+      "sns:DeleteTopic",
+      "sns:SetTopicAttributes",
     ]
     resources = ["*"]
+    
     condition {
       test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
+      variable = "aws:ResourceTag/Owner"
+      values   = ["$${aws:username}"]
+    }
+}
+
+  statement {
+    sid    = "S3ReadAndCreate"
+    effect = "Allow"
+    actions = [
+      "s3:ListAllMyBuckets",
+      "s3:GetBucketLocation",
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:GetObjectAcl",
+      "s3:GetBucketAcl",
+      "s3:GetBucketPolicy",
+      "s3:GetBucketPolicyStatus",
+      "s3:GetBucketTagging",
+      "s3:GetObjectTagging",
+      "s3:GetLifecycleConfiguration",
+      "s3:PutObject",
+      "s3:CreateBucket",
+      "s3:PutObjectTagging",
+      "s3:DeleteObjectTagging",
+      "s3:PutBucketAcl",
+      "s3:PutBucketPolicy",
+      "s3:PutBucketTagging",
+      "s3:PutBucketVersioning",
+      "s3:PutBucketLogging",
+      "s3:PutLifecycleConfiguration",
+      "s3:PutReplicationConfiguration",
+      "s3:DeleteObject",
+      "s3:DeleteBucket"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "S3UpdateAndDelete"
+    effect = "Allow"
+    actions = [
+      "s3:DeleteBucket",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }
 
   statement {
-    sid      = "ApplicationAutoScalingPermissions"
-    effect   = "Allow"
-    actions  = [
-      "application-autoscaling:*"
+    sid    = "ELBReadAndCreate"
+    effect = "Allow"
+    actions = [
+      "elasticloadbalancing:CreateLoadBalancer",
+      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
+      "elasticloadbalancing:DescribeListeners",
+      "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetHealth",
+      "elasticloadbalancing:DescribeTags",
+      "elasticloadbalancing:RemoveTags",
+      "elasticloadbalancing:AddTags"
+    ]
+    resources = ["*"]
+}
+
+  statement {
+    sid    = "ELBUpdateAndDelete"
+    effect = "Allow"
+    actions = [
+      "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
+      "elasticloadbalancing:ModifyTargetGroup",
+      "elasticloadbalancing:ModifyListener",
+      "elasticloadbalancing:DeleteListener",
+      "elasticloadbalancing:DeleteTargetGroup",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Owner"
+      values   = ["$${aws:username}"]
+    }
+  }
+
+
+  statement {
+    sid    = "AutoScalingReadAndCreate"
+    effect = "Allow"
+    actions = [
+      "application-autoscaling:RegisterScalableTarget",
+      "application-autoscaling:PutScalingPolicy",
+      "application-autoscaling:DescribeScalableTargets",
+      "application-autoscaling:DescribeScalingPolicies",
+      "application-autoscaling:DescribeScalingActivities"
     ]
     resources = ["*"]
   }
 
   statement {
-    sid      = "ElasticLoadBalancingPermissions"
-    effect   = "Allow"
-    actions  = [
-      "elasticloadbalancing:*"
+    sid    = "AutoScalingUpdateAndDelete"
+    effect = "Allow"
+    actions = [
+      "application-autoscaling:DeregisterScalableTarget",
+      "application-autoscaling:DeleteScalingPolicy",
+      "application-autoscaling:UpdateScalableTarget"
     ]
     resources = ["*"]
+
     condition {
       test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }
 
-  statement {
-    sid      = "AutoScalingPermissions"
-    effect   = "Allow"
-    actions  = [
-      "autoscaling:*"
-    ]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
-      values   = ["$${aws:username}"]
-    }
-  }
 
   statement {
     sid = "AutoScalingCreate"
@@ -205,6 +304,7 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
       "elasticloadbalancing:DescribeListeners",
       "s3:List*",
       "s3:Get*",
+      "s3:PutEncryptionConfiguration",
       "ecr:BatchGet*",
       "ecr:BatchCheck*",
       "ecr:Describe*",
@@ -303,13 +403,27 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
     effect = "Allow"
     actions = [
       "ec2:CreateSecurityGroup",
-      "ec2:DeleteSecurityGroup",
     ]
     resources = ["*"]
 
     condition {
       test     = "StringEquals"
       variable = "aws:RequestTag/Owner"
+      values   = ["$${aws:username}"]
+    }
+  }
+
+  statement {
+    sid    = "DeleteSecurityGroupWithOwnerTag"
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteSecurityGroup",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }
@@ -336,13 +450,6 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
       # "ec2:DeleteTags"
     ]
     resources = ["*"]
-
-    # Students can only create or delete tags where the Owner matches their username
-    # condition {
-    #   test     = "StringEquals"
-    #   variable = "aws:RequestTag/Owner"
-    #   values   = ["$${aws:username}"]
-    # }
   }
 
   statement {
@@ -356,7 +463,7 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
     # Students can only create or delete tags where the Owner matches their username
     condition {
       test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }
@@ -383,7 +490,7 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
     resources = ["*"]
     condition {
       test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }
@@ -419,7 +526,7 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
     
     condition {
       test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
+      variable = "aws:ResourceTag/Owner"
       values   = ["$${aws:username}"]
     }
   }

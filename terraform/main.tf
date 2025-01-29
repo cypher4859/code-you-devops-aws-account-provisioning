@@ -26,7 +26,16 @@ provider "aws" {
       role_arn = module.new_cohort_aws_setup.new_account_ops_role_arn
     }
 
-    #profile = "blackhat-user" # Turn this on for local deployment
+    profile = "blackhat-user" # Turn this on for local deployment
+}
+
+data "aws_region" "current" {
+  
+}
+
+locals {
+  dynamic_dashboard_updater_lambda_name = "dynamic-dashboard-updater-student-environment"
+  region      = data.aws_region.current.name
 }
 
 module "first-time-setup" {
@@ -39,7 +48,7 @@ module "first-time-setup" {
 }
 
 module "root_organization_cloudtrail" {
-    count = var.environment == "production" ? 1 : 0
+    # count = var.environment == "production" ? 1 : 0
     source = "./modules/cloudtrail-setup"
     environment = var.environment
 }
@@ -73,6 +82,7 @@ module "new_cohort_aws_setup" {
     management_org_id = module.root_organization_setup.management_org_id
     management_admin_group_arn = module.root_account_provisioning.management_admin_group_arn
     root_account_staff_admin_users = module.root_account_provisioning.management_admin_iam_users
+    environment = var.environment
     providers = {
       aws = aws.student_account
       aws.management_account = aws
@@ -81,13 +91,27 @@ module "new_cohort_aws_setup" {
 }
 
 module "post_account_provisioning" {
-    source = "./modules/post-account-setup-provisioning"
+    source = "./modules/post-root-account-setup-provisioning"
     root_administrators_group_name = module.root_account_provisioning.management_administrators_group_name
     sub_account_id = module.new_cohort_aws_setup.new_account_id
     root_acct_staff_administrators_role_arn = module.root_account_provisioning.management_admin_role_arn
     sub_account_staff_administrators_role_arn = module.new_cohort_aws_setup.subaccount_staff_administrators_role_arn
     root_acct_staff_administrators_role_name = module.root_account_provisioning.managememnt_admin_role_name
+    sub_account_observability_role_arn = module.new_cohort_aws_setup.observability_role_arn
+    dynamic_dashboard_updater_lambda_name = local.dynamic_dashboard_updater_lambda_name
 }
+
+# module "post_subaccount_provisioning" {
+#     source = "./modules/post-sub-account-setup-provisioning"
+#     dynamic_dashboard_updater_lambda_arn = module.post_account_provisioning.dynamic_dashboard_updater_lambda_arn
+#     dynamic_dashboard_updater_lambda_name = local.dynamic_dashboard_updater_lambda_name
+#     organization_id = module.root_organization_setup.management_org_id
+#     lambda_function_region = local.region
+#     providers = {
+#       aws = aws.student_account
+#       aws.management_account = aws
+#     }
+# }
 
 module "upload_student_credentials" {
     source                  = "./modules/upload-student-credentials"

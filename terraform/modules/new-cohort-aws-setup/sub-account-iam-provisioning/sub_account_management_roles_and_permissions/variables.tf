@@ -45,3 +45,8 @@ variable "root_account_staff_admin_users" {
     description = "The list of admin users that the subaccount admin role will trust"
     type = list
 }
+
+variable "management_account_id" {
+    description = "The account ID of the parent management account"
+    type = string
+}

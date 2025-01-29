@@ -71,3 +71,43 @@ resource "aws_iam_role_policy" "mentor_role_permissions_policy" {
   policy = data.aws_iam_policy_document.mentor_permission_policy.json
 }
 
+resource "aws_iam_role" "cloudwatch_source_role" {
+  name = "CloudWatchSourceRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::${var.management_account_id}:root"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "cloudwatch_source_policy" {
+  name = "CloudWatchSourcePolicy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "cloudwatch:PutMetricData",
+          "logs:PutLogEvents"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "attach_source_policy" {
+  role       = aws_iam_role.cloudwatch_source_role.name
+  policy_arn = aws_iam_policy.cloudwatch_source_policy.arn
+}
+

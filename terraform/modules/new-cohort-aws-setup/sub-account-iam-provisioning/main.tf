@@ -8,6 +8,10 @@ terraform {
     }
 }
 
+data "aws_caller_identity" "parent" {
+  provider = aws.management_account
+}
+
 # FIXME: Roles and permissions needs fixed
 module "management_roles_and_permissions" {
     source = "./sub_account_management_roles_and_permissions"
@@ -16,6 +20,7 @@ module "management_roles_and_permissions" {
     management_org_id = var.management_org_id
     management_admin_group_arn = var.management_admin_group_arn
     root_account_staff_admin_users = [for iam_user in var.root_account_staff_admin_users : iam_user.arn] #var.root_account_staff_admin_users
+    management_account_id = data.aws_caller_identity.parent.account_id
     providers = {
       aws = aws
       aws.management_account = aws.management_account
@@ -38,5 +43,13 @@ module "subaccount_permissions_for_students" {
     providers = {
       aws = aws
       aws.management_account = aws.management_account
+    }
+}
+
+module "subaccount_permissions_for_monitoring" {
+    source = "./sub_account_monitoring_roles"
+    providers = {
+      aws = aws
+      aws.management_account=aws.management_account
     }
 }

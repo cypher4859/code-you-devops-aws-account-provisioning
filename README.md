@@ -7,6 +7,8 @@
 4. Use the CLI to enable service access
 ```
 aws organizations enable-aws-service-access --service-principal cloudtrail.amazonaws.com
+aws organizations enable-aws-service-access --service-principal "monitoring.amazonaws.com"
+
 ```
 You can verify by:
 ```

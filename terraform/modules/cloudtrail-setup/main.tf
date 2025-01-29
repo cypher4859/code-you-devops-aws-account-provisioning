@@ -3,10 +3,12 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  trail_name  = "CodeYou-Trail"
   region      = data.aws_region.current.name
   account_id  = data.aws_caller_identity.current.account_id
   partition   = data.aws_partition.current.partition
+  environment = var.environment
+  trail_name  = "CodeYou-Trail-${local.region}-${local.account_id}-${local.environment}"
+  cloudtrail_bucket_name = "codeyou-root-org-cloudtrail-${local.region}-${local.account_id}-${local.environment}"
 }
 
 
@@ -63,13 +65,13 @@ resource "aws_kms_key" "cloudtrail_key" {
 }
 
 resource "aws_kms_alias" "cloudtrail_key_alias" {
-  name          = "alias/cloudtrail-key"
+  name          = "alias/cloudtrail-key-${local.trail_name}"
   target_key_id = aws_kms_key.cloudtrail_key.id
 }
 
 # Create an S3 bucket for CloudTrail logs
 resource "aws_s3_bucket" "cloudtrail_bucket" {
-  bucket = var.cloudtrail_bucket_name
+  bucket = local.cloudtrail_bucket_name
 
   lifecycle {
     prevent_destroy = true # Prevent accidental deletion of the bucket
@@ -77,7 +79,8 @@ resource "aws_s3_bucket" "cloudtrail_bucket" {
 
   tags = {
     Name        = "CloudTrail Logs Bucket"
-    Environment = var.environment
+    Trail       = local.trail_name
+    Environment = local.environment
   }
 }
 
@@ -164,6 +167,6 @@ resource "aws_cloudtrail" "CodeYou-Trail" {
 
   tags = {
     Name        = "Code:You - Organization CloudTrail"
-    Environment = var.environment
+    Environment = local.environment
   }
 }

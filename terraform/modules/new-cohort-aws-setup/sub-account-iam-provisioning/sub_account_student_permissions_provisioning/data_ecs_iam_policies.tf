@@ -198,15 +198,12 @@ data "aws_iam_policy_document" "student_ecs_and_project_permission_policy" {
     actions = [
       "elasticloadbalancing:RegisterTargets ",
       "elasticloadbalancing:CreateLoadBalancer",
-      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:Describe*",
+      "elasticloadbalancing:List*",
       "elasticloadbalancing:ModifyLoadBalancerAttributes",
       "elasticloadbalancing:CreateTargetGroup",
-      "elasticloadbalancing:DescribeTargetGroups",
-      "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:CreateListener",
-      "elasticloadbalancing:DescribeRules",
       "elasticloadbalancing:CreateRule",
-      "elasticloadbalancing:RegisterTargets",
     ]
     resources = ["*"]
   }

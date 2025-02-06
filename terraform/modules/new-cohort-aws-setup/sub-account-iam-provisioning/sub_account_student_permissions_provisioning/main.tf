@@ -92,3 +92,18 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
   role = aws_iam_role.ecs_instance_role.name
 }
 
+resource "aws_iam_role" "challenge_lambda_function_role" {
+  name               = "DevOpsClassChallengeLambdaFunctionRole"
+  assume_role_policy = data.aws_iam_policy_document.challenge_lambda_function_trust_policy.json
+}
+
+resource "aws_iam_policy" "challenge_lambda_function_policy" {
+  name   = "DevOpsClassChallengeLambdaFunctionPolicy"
+  policy = data.aws_iam_policy_document.challenge_lambda_function_permissions_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "challenge_lambda_function__policy_attach" {
+  role       = aws_iam_role.challenge_lambda_function_role.name
+  policy_arn = aws_iam_policy.challenge_lambda_function_policy.arn
+}
+

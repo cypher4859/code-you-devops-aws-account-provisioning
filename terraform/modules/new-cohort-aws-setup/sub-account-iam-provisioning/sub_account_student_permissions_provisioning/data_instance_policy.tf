@@ -74,3 +74,29 @@ data "aws_iam_policy_document" "ec2_trust_policy" {
     actions = ["sts:AssumeRole"]
   }
 }
+
+data "aws_iam_policy_document" "challenge_lambda_function_trust_policy" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+data "aws_iam_policy_document" "challenge_lambda_function_permissions_policy" {
+  statement {
+    sid    = "AllowChallengeLambdaFunctionToS3Things"
+    effect = "Allow"
+    actions = [
+        "s3:GetObject",
+        "s3:PutObject",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
+}

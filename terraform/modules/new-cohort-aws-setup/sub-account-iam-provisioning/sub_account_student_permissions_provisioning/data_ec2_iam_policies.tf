@@ -103,7 +103,6 @@ data "aws_iam_policy_document" "student_owner_permission_policy" {
       "s3:PutObject",
       "s3:CreateBucket",
       "s3:PutObjectTagging",
-      "s3:DeleteObjectTagging",
       "s3:PutBucketAcl",
       "s3:PutBucketPolicy",
       "s3:PutBucketTagging",
@@ -111,7 +110,7 @@ data "aws_iam_policy_document" "student_owner_permission_policy" {
       "s3:PutBucketLogging",
       "s3:PutLifecycleConfiguration",
       "s3:PutReplicationConfiguration",
-      "s3:DeleteObject",
+      "s3:DeleteObject*",
       "s3:DeleteBucket"
     ]
     resources = ["*"]
@@ -508,6 +507,7 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
       "iam:CreatePolicy",
       "lambda:ListTags",
       "lambda:InvokeFunction",
+      "lambda:GetAccountSettings"
     ]
     resources = [ "*" ]
   }

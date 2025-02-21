@@ -232,10 +232,13 @@ data "aws_iam_policy_document" "student_owner_permission_policy" {
     sid      = "ManageAccessKeys"
     effect   = "Allow"
     actions  = [
+      "iam:GetUser",
+      "iam:TagUser",
       "iam:CreateAccessKey",
       "iam:DeleteAccessKey",
       "iam:UpdateAccessKey",
-      "iam:ListAccessKeys"
+      "iam:ListAccessKeys",
+      "iam:UntagUser"
     ]
     resources = ["arn:aws:iam::*:user/$${aws:username}"]
   }
@@ -266,7 +269,6 @@ data "aws_iam_policy_document" "student_owner_permission_policy" {
     effect   = "Allow"
     actions  = [
       "iam:TagUser",
-      "iam:UntagUser"
     ]
     resources = ["arn:aws:iam::*:user/$${aws:username}"]
   }
@@ -417,6 +419,8 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
     effect = "Allow"
     actions = [
       "ec2:DeleteSecurityGroup",
+      "ec2:ModifySecurityGroupRules",
+      "ec2:DescribeSecurityGroups"
     ]
     resources = ["*"]
 
@@ -428,6 +432,15 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
   }
 
   statement {
+    sid    = "ModifySecurityGroupWithOwnerTag"
+    effect = "Allow"
+    actions = [
+      "ec2:ModifySecurityGroupRules",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     sid     = "AllowSecurityRuleManagement"
     effect  = "Allow"
     actions = [
@@ -435,6 +448,8 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
       "ec2:AuthorizeSecurityGroupEgress",
       "ec2:RevokeSecurityGroupIngress",
       "ec2:RevokeSecurityGroupEgress",
+      "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+      "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
       "ec2:AllocateAddress",
       "ec2:AssociateAddress"
     ]
@@ -446,6 +461,8 @@ data "aws_iam_policy_document" "student_ec2_permission_policy" {
     effect = "Allow"
     actions = [
       "ec2:CreateTags",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSecurityGroupRules",
       # "ec2:DeleteTags"
     ]
     resources = ["*"]

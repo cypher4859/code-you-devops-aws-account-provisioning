@@ -6,97 +6,95 @@ locals {
 
 data "aws_iam_policy_document" "student_ecs_and_project_permission_policy" {
   # 1) ALLOW creating ECS resources if they pass a tag 'Owner = ${aws:username}'
-  statement {
-    sid    = "CreateEcsResourcesWithOwnerTag"
-    effect = "Allow"
-    actions = [
-      "ecs:UpdateService",
-      "ecs:RunTask"
-    ]
-    resources = ["*"]
+  # statement {
+  #   sid    = "CreateEcsResourcesWithOwnerTag"
+  #   effect = "Allow"
+  #   actions = [
+  #     "ecs:UpdateService",
+  #     "ecs:RunTask"
+  #   ]
+  #   resources = ["*"]
 
-    # The key part: require they set Owner = their username on creation
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Owner"
-      values   = ["$${aws:username}"]
-    }
-  }
+  #   # The key part: require they set Owner = their username on creation
+  #   condition {
+  #     test     = "StringEquals"
+  #     variable = "aws:RequestTag/Owner"
+  #     values   = ["$${aws:username}"]
+  #   }
+  # }
 
   statement {
     sid     = "CreateCluster"
     effect = "Allow"
     actions = [
-      "ecs:Create*",
-      "ecs:RegisterTaskDefinition",
-      "ecs:PutClusterCapacityProviders"
+      "ecs:*"
 
     ]
     resources = ["*"]
   }
 
-  statement {
-    sid    = "AllowTagResourceOnCreateActions"
-    effect = "Allow"
-    actions = [
-      "ecs:TagResource"
-    ]
-    resources = ["*"]
+  # statement {
+  #   sid    = "AllowTagResourceOnCreateActions"
+  #   effect = "Allow"
+  #   actions = [
+  #     "ecs:TagResource"
+  #   ]
+  #   resources = ["*"]
 
-    condition {
-      test     = "StringEquals"
-      variable = "ecs:CreateAction"
-      values   = [
-        "CreateCluster",
-        "CreateCapacityProvider",
-        "CreateService",
-        "CreateTaskSet",
-        "RegisterContainerInstance",
-        "RegisterTaskDefinition",
-        "RunTask",
-        "StartTask"
-      ]
-    }
-  }
+  #   condition {
+  #     test     = "StringEquals"
+  #     variable = "ecs:CreateAction"
+  #     values   = [
+  #       "CreateCluster",
+  #       "CreateCapacityProvider",
+  #       "CreateService",
+  #       "CreateTaskSet",
+  #       "RegisterContainerInstance",
+  #       "RegisterTaskDefinition",
+  #       "RunTask",
+  #       "StartTask"
+  #     ]
+  #   }
+  # }
 
 
   # 2) ALLOW manage/update ECS resources (clusters, services, tasks, etc.)
   #    only if the resource is tagged with Owner = ${aws:username}
-  statement {
-    sid    = "ManageOwnEcsResources"
-    effect = "Allow"
-    actions = [
-      "ecs:DeleteCluster",
-      "ecs:DeregisterTaskDefinition",
-      "ecs:UpdateService",
-      "ecs:DeleteService",
-      "ecs:StopTask",
-      # Possibly you want them to be able to run tasks on an existing service, etc.
-      "ecs:RunTask"
-      # For demonstration, add whatever ECS actions they need to 'manage' resources.
-    ]
-    resources = ["*"]
+  # statement {
+  #   sid    = "ManageOwnEcsResources"
+  #   effect = "Allow"
+  #   actions = [
+  #     "ecs:DeleteCluster",
+  #     "ecs:DeregisterTaskDefinition",
+  #     "ecs:UpdateService",
+  #     "ecs:DeleteService",
+  #     "ecs:StopTask",
+  #     # Possibly you want them to be able to run tasks on an existing service, etc.
+  #     "ecs:RunTask"
+  #     # For demonstration, add whatever ECS actions they need to 'manage' resources.
+  #   ]
+  #   resources = ["*"]
 
-    condition {
-      test     = "StringEquals"
-      variable = "ecs:ResourceTag/Owner"
-      values   = ["$${aws:username}"]
-    }
-  }
+  #   condition {
+  #     test     = "StringEquals"
+  #     variable = "ecs:ResourceTag/Owner"
+  #     values   = ["$${aws:username}"]
+  #   }
+  # }
 
-  # 3) (OPTIONAL) ALLOW read-only ECS if you want them to describe all ECS resources
-  statement {
-    sid    = "EcsReadOnly"
-    effect = "Allow"
-    actions = [
-      "ecs:List*",
-      "ecs:Describe*",
-      "servicediscovery:List*"
-      # This might let them see other clusters or services. 
-      # If you only want them to see their own, skip or scope it with conditions.
-    ]
-    resources = ["*"]
-  }
+  # # 3) (OPTIONAL) ALLOW read-only ECS if you want them to describe all ECS resources
+  # statement {
+  #   sid    = "EcsReadOnly"
+  #   effect = "Allow"
+  #   actions = [
+  #     "ecs:List*",
+  #     "ecs:Describe*",
+  #     "servicediscovery:List*"
+  #     # This might let them see other clusters or services. 
+  #     # If you only want them to see their own, skip or scope it with conditions.
+  #   ]
+  #   resources = ["*"]
+  # }
 
   statement {
     sid    = "AllowReadOnlyMetrics"
@@ -128,13 +126,7 @@ data "aws_iam_policy_document" "student_ecs_and_project_permission_policy" {
     sid     = "AllowCloudFormationOperations"
     effect  = "Allow"
     actions = [
-        "cloudformation:CreateStack",
-        "cloudformation:UpdateStack",
-        "cloudformation:DeleteStack",
-        "cloudformation:Describe*",
-        "cloudformation:List*",
-        "cloudformation:GetTemplate",
-        "cloudformation:ValidateTemplate",
+        "cloudformation:*",
     ]
     resources = ["*"]
   }
@@ -196,34 +188,28 @@ data "aws_iam_policy_document" "student_ecs_and_project_permission_policy" {
     sid     = "AllowALB"
     effect  = "Allow"
     actions = [
-      "elasticloadbalancing:RegisterTargets ",
-      "elasticloadbalancing:CreateLoadBalancer",
-      "elasticloadbalancing:Describe*",
-      "elasticloadbalancing:List*",
-      "elasticloadbalancing:ModifyLoadBalancerAttributes",
-      "elasticloadbalancing:CreateTargetGroup",
-      "elasticloadbalancing:CreateListener",
-      "elasticloadbalancing:CreateRule",
+      "elasticloadbalancing:*",
     ]
     resources = ["*"]
   }
 
-  statement {
-    sid     = "AllowALBOwner"
-    effect = "Allow"
-    actions = [
-      "elasticloadbalancing:Describe*",
-      "elasticloadbalancing:ModifyLoadBalancerAttributes",
-      "elasticloadbalancing:DeleteTargetGroup",
-      "elasticloadbalancing:ModifyTargetGroup",
-      "elasticloadbalancing:DeleteListener",
-      "elasticloadbalancing:ModifyListener",
-      "elasticloadbalancing:DeleteRule",
-      "elasticloadbalancing:ModifyRule",
-      "elasticloadbalancing:DeregisterTargets"
-    ]
+  # statement {
+  #   sid     = "AllowALBOwner"
+  #   effect = "Allow"
+  #   actions = [
+  #     "elasticloadbalancing:Describe*",
+  #     "elasticloadbalancing:ModifyLoadBalancerAttributes",
+  #     "elasticloadbalancing:DeleteTargetGroup",
+  #     "elasticloadbalancing:ModifyTargetGroup",
+  #     "elasticloadbalancing:DeleteListener",
+  #     "elasticloadbalancing:ModifyListener",
+  #     "elasticloadbalancing:DeleteRule",
+  #     "elasticloadbalancing:ModifyRule",
+  #     "elasticloadbalancing:DeregisterTargets"
+  #   ]
     
-    resources = ["*"]
-  }
+  #   resources = ["*"]
+  # }
 }
+
 

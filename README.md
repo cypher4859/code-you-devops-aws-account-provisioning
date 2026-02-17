@@ -17,7 +17,7 @@ aws organizations list-aws-service-access-for-organization
 <!-- In Progress -->
 <!-- 4. Create a pgp key -->
 <!-- 5. Upload the pgp key to the S3 bucket -->
-6. `terraform apply -target="module.first-time-setup" -var="github_repo=user/repo" -var="github_token=<token>" -var="<bucket-name>" -var="target_workflow=whatever"
+6. `terraform apply -target="module.first-time-setup" -var="github_repo=user/repo" -var="github_token=<token>" -var="<bucket-name>" -var="target_workflow=whatever"`
 
 ## Subsequent provisioning steps
 1. Download the student roster from Code:You, Expected output is an excel spreadsheet or similar
